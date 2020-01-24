@@ -30,5 +30,7 @@ int main() {
     printf("the sum is %d\n",  summed);
     printf("the avg is %lf\n", avged);
 
+    printf("and git works from home-desktop w/ WSL exactly as it does on the laptop now")
+
     return 0;
 }
