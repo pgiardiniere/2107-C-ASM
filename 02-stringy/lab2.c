@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-char str[] = "placeholder";
+char str[] = "place";
 
 int length(char str[]) {
     int i = 0;
@@ -8,14 +8,23 @@ int length(char str[]) {
     return i;
 }
 
-int isLower(char c) {    
-    if (c >= 'a' && c <= 'z') return 1;
+int isLower(char *c) {    
+    if (*c >= 'a' && *c <= 'z') return 1;
     else return 0;
 }
 
-char toUpper(char c){
-    c -= 32;
-    return c;
+void toUpper(char c){ c -= 32; }
+
+int capitalize(char *s[]) {
+    int count = 0;
+    int i = 0;
+    for (i = 0; i < length(*s); i++) {
+        if (isLower( (int) *s[i]) ) {
+            toUpper(*s[i]);
+            count++;
+        }
+    }
+    return count;
 }
 
 // // throws a warning for now, can do "return *s" to silence
@@ -50,13 +59,9 @@ int main() {
         j++;
     }
 
-    // test toUpper
-    printf("%c\n", toUpper('d'));
-
-    // test isLower
-    printf("%d\n", isLower('D'));
-    printf("%d\n", isLower('d'));
-    printf("%d\n", isLower('4'));
+    // test
+    printf("capitlized chars: %d\n", capitalize(&s));
+    printf("%s\n", s);
 
     return 0;
 }
