@@ -22,7 +22,23 @@ void capitalize(char *c, int *changed) {
     }
 }
 
-void toString(char s[], int len, int changed) {
+char * reverse(char s[], int len) {
+    int i = 0;
+    int j = len - 1;
+    char *reversed = (char *) malloc(len * sizeof(char));
+    while (i < len) {
+        reversed[i] = s[j];
+        i++;
+        j--;
+    }
+    return *reversed;
+}
+ 
+void getString() {
+
+}
+
+void print(char s[], int len, int changed) {
     printf("    String is : %s\n", s);
     printf("    length is : %d\n", len);
     printf("    Changed is: %d\n\n", changed);
@@ -33,13 +49,21 @@ int main() {
     int len = length(s);
     int changed = 0;
 
-    toString(s, len, changed);
+    print(s, len, changed);
     int i = 0;
     while (i < length(s)) {
         capitalize(&s[i], &changed);
         i++;
     }
-    toString(s, len, changed);
+    print(s, len, changed);
 
+    i = 0;
+    while (i < length(s)) {
+        reverse(&s[i], &changed);
+        i++;
+    }
 
+    *s = reverse(s, len);
+
+    print (s, len, changed);
 }
