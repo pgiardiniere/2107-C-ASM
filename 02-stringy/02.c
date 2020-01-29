@@ -22,18 +22,18 @@ void capitalize(char *c, int *changed) {
     }
 }
 
-char * reverse(char s[], int len) {
-    int i = 0;
-    int j = len - 1;
-    char *reversed = (char *) malloc(len * sizeof(char));
-    while (i < len) {
-        reversed[i] = s[j];
-        i++;
-        j--;
+void reverse (char s[], int right) {
+    int left = 0;
+    char tmp;
+    while (left < right) {
+        tmp = s[left];
+        s[left] = s[right];
+        s[right] = tmp;
+        left++;
+        right--;
     }
-    return *reversed;
 }
- 
+
 void getString() {
 
 }
@@ -45,7 +45,7 @@ void print(char s[], int len, int changed) {
 }
 
 int main() {
-    char s[] = "place";
+    char s[] = {'p','l','a','c','e','\0'}; 
     int len = length(s);
     int changed = 0;
 
@@ -57,13 +57,6 @@ int main() {
     }
     print(s, len, changed);
 
-    i = 0;
-    while (i < length(s)) {
-        reverse(&s[i], &changed);
-        i++;
-    }
-
-    *s = reverse(s, len);
-
-    print (s, len, changed);
+    reverse(s, len-1);
+    print(s, len, changed);
 }
