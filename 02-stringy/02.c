@@ -2,7 +2,7 @@
 
 int length (char str[]) {
     int i = 0;
-    while (str[i] != '\0') { i++; }
+    while (str[i] != '\n') { i++; }
     return i;
 }
 
@@ -34,29 +34,37 @@ void reverse (char s[], int right) {
     }
 }
 
-void getString() {
-
+void getString(char s[]) {
+    printf("Please input a string, max length 256 characters. Hit enter when finished\n");
+    fgets(s, 256, stdin);
 }
 
 void print(char s[], int len, int changed) {
-    printf("    String is : %s\n", s);
+    printf("    String is : %s", s);
     printf("    length is : %d\n", len);
     printf("    Changed is: %d\n\n", changed);
 }
 
+void printVertical(char s[], int len, int changed) {
+    int i = 0;
+    for (i = 0; i < len; i++) 
+        printf("    %c\n", s[i]); 
+    printf("    length is : %d\n", len);
+    printf("    Changed is: %d\n\n", changed);    
+}
+
 int main() {
-    char s[] = {'p','l','a','c','e','\0'}; 
+    char s[256];
+    getString(s);
     int len = length(s);
     int changed = 0;
 
-    print(s, len, changed);
+    printVertical(s, len, changed);
     int i = 0;
     while (i < length(s)) {
         capitalize(&s[i], &changed);
         i++;
     }
-    print(s, len, changed);
-
     reverse(s, len-1);
-    print(s, len, changed);
+    printVertical(s, len, changed);
 }
