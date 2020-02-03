@@ -19,6 +19,18 @@ void addressVal(int *a, int *b) {
     printf("       a address: %u\n", a);
 }
 
+int StrLen(char *s) {
+    int i = 0;
+    while (*(s++) != '\0') { i++; }     // dereference, compare, then increment address location
+    return i;
+}
+
+void StrCopy(char * dest, char *src) {
+    while (*src != '\0') { *(dest++) = *(src++); }
+    *dest = '\0';   // remember, if you comment this out or forget to add null char termination,
+                    // StrLen could be messed up (as it reads the garbage stored in mem)
+}
+
 int main() {
 
     int n = 5;
@@ -86,7 +98,33 @@ int main() {
         i++;
     }
 
-    //
+    // more array pointer stuff
+    int *array_ptr;
+    array_ptr = nums;
+
+    printf("array_ptr = %u\n", array_ptr);
+    for (i = 0; i < 5; i++) {
+        printf("%d %u\n", *array_ptr, array_ptr);
+        array_ptr++;
+    }
+
+    // #########################
+    // now, char arrays --- indexing in an outside function
+    // #########################
+    // length()
+    char string[] = "Hello, World!"; 
+    printf("\n%s \n", string);
+    int len = StrLen(string);
+    printf("%d\n", len);
+
+    // StrCopy()
+    printf("\nStrCopy()\n");
+    char copied[50];
+    StrCopy(copied, string);
+    printf("%s\n", copied);
+    printf("%d\n", StrLen(copied));
+
+    // #########################
 
     return 0;
 }
