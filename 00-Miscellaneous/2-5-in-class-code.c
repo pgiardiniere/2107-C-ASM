@@ -79,16 +79,11 @@ int main(int argc, char *argv[]) {
     }
     printf("\n");
 
-    for (i = 0; i < argc; i++) {
-        int i = 0
-    }
-
     i = 0;
     int n = 0;
     int sum = 0;
     // if (argv[i]) > 0  basically, if argument was passed, try to coirce (ATOI()) to integer,
-    // add to sum
-
+    // add to sum (unfinished segment)
 
     // #########################
     // NEXT :: Pointers to Functions
