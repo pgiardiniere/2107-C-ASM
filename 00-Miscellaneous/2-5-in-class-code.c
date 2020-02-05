@@ -3,8 +3,8 @@
 
 int numcompA(char *sl, char *s2);
 int numcompD(char *sl, char *s2);
-void swap2(char *v[], char *left, char *last);
-
+void swap2(void *v[], char *left, char *last);
+void printNums();
 
 // command line arguments ::
 // argc     contains    num of args entered     'ARGument Count'
@@ -99,8 +99,28 @@ int main(int argc, char *argv[]) {
     char *ptr_arr[] = { "5", "3", "2", "1", "4" };
     qsort1(ptr_arr, 0, 9, (int (*)(void*, void*))(asc ? numcompA : numcompD));
 
+    // #########################
+    // NEXT :: malloc()
+    // #########################
+    // when using malloc(), ALWAYS
+    // always always always
+    // write a "free;" statement after you're done
+    // this (ideally) stops any potential memory leaks you have.
+
     return 0;
 }
+
+// what are all these funcions...
+// OH fucking qsort means we're implementing QuickSort here
+// but importantly, we're QuickSorting
+// and choosing our implementation of that QuickSort by passing as variables to QSort1 
+// the pointers of the functions it's going to use
+
+// important note:: function(void *foo)
+// in this context, void *foo
+
+// means we are passing (by value) a pointer which references UNTYPED data
+// so, by extension, functions are untyped in C
 
 // this is the simpler version of qsort1 below --- i.e. this deals with nums, qsort1 works with funcs
 int numcompA(char *s1, char *s2){
@@ -125,13 +145,17 @@ int numcompD(char *s1, char *s2){
     else { return 0; }
 }
 
-int swap2(char *v[], char *left, char *last) {
+void swap2(void *v[], char *left, char *last) {
     char *temp;
     temp = v[*left];
     v[*left] =v[*last];
     v[*last] = *temp;    
 }
 
+void printNums(char *arr[]) {
+    // printf();
+}
+ 
 void qsort1(void *v[], int left, int right,
     int (*comp)(void *, void *)){
     int i, last;
