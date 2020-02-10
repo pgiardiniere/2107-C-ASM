@@ -3,35 +3,42 @@
 #define NKEYS 10
 
 // prototyping :: Stucts first, then functions -- (same for ordering w/o structs)
-struct Point;
+struct point;
 struct Rectangle;
-struct Point make();
+struct point make();
 struct Rectangle canonRect();
 struct key;
 
-void printk();
-int MIN();
-int MAX();
 void print();
+void print2();
 void printR();
 void printk();
 void printkarr();
+void printk();
+int MIN();
+int MAX();
 
 // structs are similar to classes in java, but more primitive
-struct Point {
+struct point {
     int x;
     int y;
 };
 
+// typedef :: don't need to use 'struct' in main() (or other methods) when instantiating
+typedef struct {
+    int x;
+    int y;
+} Point;
+
 // nested struct
 struct Rectangle {
-    struct Point a;
-    struct Point b;
+    struct point a;
+    struct point b;
 };
 
 // struct method ("constructor-ish")
-struct Point make(int x, int y) {
-    struct Point p = {x, y};
+struct point make(int x, int y) {
+    struct point p = {x, y};
     return p;
 };
 
@@ -51,7 +58,7 @@ struct key {
 };
 
 int main() {
-    struct Point a;
+    struct point a;
     a.x = 2;
     a.y = 3;
 
@@ -60,7 +67,7 @@ int main() {
     printf("\n");
 
     // alternative declaration method::
-    struct Point b = {1000, 2000};
+    struct point b = {1000, 2000};
     print(b);
     printf("\n");
 
@@ -71,7 +78,7 @@ int main() {
     rect.b.y = 4;
     printR(rect);
 
-    struct Point c = make(10, 20);
+    struct point c = make(10, 20);
     print(c);
     printf("\n");
 
@@ -80,9 +87,9 @@ int main() {
     printR(s);
 
     // Pointers:
-    struct Point origin = {0, 0};
+    struct point origin = {0, 0};
     print(origin);
-    struct Point *or = &origin;
+    struct point *or = &origin;
   //printf("*origin = (%d, %d)\n", (*or).x (*or).y);    // for some reason this fails, but not on profs machine
     printf("*origin = (%d, %d)\n", or->x, or->y);       // this syntax is way nicer anyways.
 
@@ -94,6 +101,25 @@ int main() {
     keytab[0].count = 5;
     printkarr(keytab, 1);
 
+    // #########################
+    // Size of Structs? Actually NO additional overhead
+    // #########################
+    printf("size = %d\n", sizeof(struct point));        // recall: sizeof -- actually a keyword, not function
+    printf("size = %d\n", sizeof(struct key));
+        // size is : sum of sizeof(int) and sizeof(*char) --- just the pointer, NOT the actually char
+
+    // #########################
+    // Recursive structs (trees)
+    // #########################
+    // DO NOT make a struct which constructs additional instances of itself (guarunteed infinite loop)
+    // To get recursion (for ex. with trees) you'll use POINTERS YAAAY
+
+    // Typedef :: make your struct a datatype
+    // means you don't have to identify 'struct ___ ' which is real nice
+    Point w;
+    w.x = 12;
+    w.y = 11;
+    print2(w);
 
     return 0;
 }
@@ -101,7 +127,11 @@ int main() {
 
 
 // print methods
-void print(struct Point p) {
+void print(struct point p) {
+    printf("x = %d and y = %d\n", p.x, p.y);
+}
+
+void print2 (Point p) {
     printf("x = %d and y = %d\n", p.x, p.y);
 }
 
