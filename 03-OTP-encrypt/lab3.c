@@ -20,17 +20,15 @@ void printMenu() {
 }
 
 char* read_file(char* filename, unsigned long * filesize) {
-    FILE * file = fopen(filename, "rb");                    // Open file.
-    if (file == NULL) { perror("Error: "); exit(0); }       // If failure, print error and quit program
-    
-    fseek(file, 0, SEEK_END);                               // get size (bytes), assign to filesize, rewind strm
+    FILE * file = fopen(filename, "rb");                        // Open file.
+    if (file == NULL) { perror("Error: "); exit(0); }           // If failure, print error and quit program
+    fseek(file, 0, SEEK_END);                                   // get size (bytes), assign to filesize, rewind strm
     *filesize = (unsigned long) ftell(file);
     rewind(file);
     
     char* contents = (char*) malloc(*filesize * sizeof(char));  // allocate space in bytes. If failure, return text
     if (contents == NULL) { perror("Error: "); exit(0); }       // If failure, print error and quit program
-
-    fread(contents, 1, *filesize, file);                    // save string,  close file, return pointer
+    fread(contents, 1, *filesize, file);                        // save string,  close file, return pointer
     fclose(file);
     return contents;
 }
@@ -49,11 +47,11 @@ int write_file(char* text, char* filename, unsigned long filesize) {
 
 // makes random key in-place (through pointer), and writes it to a file.
 void make_rand_key(char* key, int length) {
-    // if (length < 0) exit(0);                // handle case of negative length (if necessary)
+    if (length < 0) exit(0);                    // handle case of negative length (as requested in doc)
     int i = 0;
     srand(time(NULL));
     while (i < length) {
-        key[i] = (char) (rand()%255 + 1);         // + 1 so range of vals is 1-255 --- i.e. NO 0 i.e. '\0'
+        key[i] = (char) (rand()%255 + 1);       // + 1 so range of vals is 1-255 --- i.e. NO 0 i.e. '\0'
         i++;
     }
 }
@@ -65,12 +63,13 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
     char* clearText = read_file(clearFile, &filesize);
     // Make keyText (appropriately sized by filesize), and write to key.txt 
     char* keyText = (char*) malloc(filesize);
-    // handle error
+    if (keyText == NULL) { perror("Error: "); exit(0); }
     int length = filesize / sizeof(char);
     make_rand_key(keyText, length);
     write_file(keyText, keyFile, filesize);
     // Make cipherText via OTP (appropriately sized by filesize), and write to cipher.txt
     char* cipherText = (char*) malloc(filesize);
+    if (cipherText == NULL) { perror("Error: "); exit(0); }
     int i = 0;
     for (i = 0; i < length; i++) { cipherText[i] = clearText[i] ^ keyText[i]; }
     cipherText[i] = '\0';
@@ -89,7 +88,7 @@ void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
     char* keyText = read_file(keyFile, &filesize);
     // Make decryptedText via OTP (appropriately sized by filesize), and write to decrypted.txt
     char* decryptedText = (char*) malloc(filesize);
-    // handle error
+    if (decryptedText == NULL) { perror("Error: "); exit(0); }
     int length = filesize / sizeof(char);
     int i = 0;
     for (i=0; i < length; i++) { decryptedText[i] = keyText[i] ^ cipherText[i]; }
