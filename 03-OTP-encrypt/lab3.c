@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 // prototypes
-// char* read_file(char* filename, unsigned long * filesize);
-// int write_file(char* output, char* filename, unsigned long filesize);
-// void printMenu()
+char* read_file(char* filename, unsigned long * filesize);
+int write_file(char* output, char* filename, unsigned long filesize);
+void printMenu();
+void make_rand_key(char* key, int length);
+
+void encrypt(char* clearFile, char* keyFile, char* cipherFile);
+void decrypt(char* keyFile, char* cipherFile, char* decryptedFile);
 
 void printMenu() {
     printf("    Encrypt a file:  1\n");
@@ -15,69 +20,107 @@ void printMenu() {
 }
 
 char* read_file(char* filename, unsigned long * filesize) {
-    FILE * file = fopen(filename, "rb");                // open file. If failure, return some text
-    if (file == NULL) { return "File not found"; }
+    FILE * file = fopen(filename, "rb");                    // Open file.
+    if (file == NULL) { perror("Error: "); exit(0); }       // If failure, print error and quit program
     
-    fseek(file, 0, SEEK_END);                           // get size (bytes), assign to filesize, rewind strm
+    fseek(file, 0, SEEK_END);                               // get size (bytes), assign to filesize, rewind strm
     *filesize = (unsigned long) ftell(file);
-    rewind(file);     
+    rewind(file);
     
-    char* contents = (char*) malloc(*filesize);          // allocate space in bytes. If failure, return text
-    if (contents == NULL) { return "mem alloc failure"; }
+    char* contents = (char*) malloc(*filesize * sizeof(char));  // allocate space in bytes. If failure, return text
+    if (contents == NULL) { perror("Error: "); exit(0); }       // If failure, print error and quit program
 
-    fread(contents, 1, *filesize, file);                // save string,  close file, return pointer
+    fread(contents, 1, *filesize, file);                    // save string,  close file, return pointer
     fclose(file);
     return contents;
 }
 
-int write_file(char* outstr, char* filename, unsigned long filesize) {
-    int written = 0;
-    FILE * file = fopen(filename, "wb");                // open file. If failure, return some text
-    if (file == NULL) { return -1; }
+int write_file(char* text, char* filename, unsigned long filesize) {
+    FILE * file = fopen(filename, "wb");
+    if (file == NULL) { perror("Error: "); exit(0); }
 
-    written = fwrite(outstr, 1, filesize, file);        // write output. If not written, return some text
-    if (written < filesize) { return -1; }
+    int written = 0;
+    written = fwrite(text, 1, filesize, file);
+    if (written < filesize) { printf("Could not write all characters\n"); exit(0); }
 
     fclose(file);
     return written;
 }
 
+// makes random key in-place (through pointer), and writes it to a file.
+void make_rand_key(char* key, int length) {
+    // if (length < 0) exit(0);                // handle case of negative length (if necessary)
+    int i = 0;
+    srand(time(NULL));
+    while (i < length) {
+        key[i] = (char) (rand()%255 + 1);         // + 1 so range of vals is 1-255 --- i.e. NO 0 i.e. '\0'
+        i++;
+    }
+}
+
+void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
+    printf("Encrypting!\n");
+    // Get clearText and filesize
+    unsigned long filesize = 0;
+    char* clearText = read_file(clearFile, &filesize);
+    // Make keyText (appropriately sized by filesize), and write to key.txt 
+    char* keyText = (char*) malloc(filesize);
+    // handle error
+    int length = filesize / sizeof(char);
+    make_rand_key(keyText, length);
+    write_file(keyText, keyFile, filesize);
+    // Make cipherText via OTP (appropriately sized by filesize), and write to cipher.txt
+    char* cipherText = (char*) malloc(filesize);
+    int i = 0;
+    for (i = 0; i < length; i++) { cipherText[i] = clearText[i] ^ keyText[i]; }
+    cipherText[i] = '\0';
+    write_file(cipherText, cipherFile, filesize);
+
+    free(clearText);
+    free(keyText);
+    free(cipherText);
+}
+
+void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
+    printf("Decrypting!\n");
+    // Get cipherText, keyText, and filesize
+    unsigned long filesize = 0;
+    char* cipherText = read_file(cipherFile, &filesize);
+    char* keyText = read_file(keyFile, &filesize);
+    // Make decryptedText via OTP (appropriately sized by filesize), and write to decrypted.txt
+    char* decryptedText = (char*) malloc(filesize);
+    // handle error
+    int length = filesize / sizeof(char);
+    int i = 0;
+    for (i=0; i < length; i++) { decryptedText[i] = keyText[i] ^ cipherText[i]; }
+    decryptedText[i] = '\0';
+    write_file(decryptedText, decryptedFile, filesize);
+
+    free(decryptedText);
+    free(keyText);
+    free(cipherText);
+}
+
 int main() {
-    // Get user input
-    int coerced;
+    // file strings
+    char clearFile[] = "clear.txt";
+    char cipherFile[] = "cipher.txt";
+    char keyFile[] = "key.txt";
+    char decryptedFile[] = "decrypted.txt";
+
+    // User input loop :: choose between 3 menu options.
+    int coerced = 1;
     char in[256];
-    do {
-        // if (coerced < 1 || coerced > 3) printf("That didn't work. Try a valid menu option. They are:\n");
+    while (coerced != 3) {
         printMenu();
         fgets(in, 256, stdin);
-        in[strcspn(in, "\n")] = 0;
+        in[strcspn(in, "\n")] = 0;          // fgets reads in newline char, replace it w/ null (ascii 0)
         coerced = atoi(in);
-    } while (coerced < 1 || coerced > 3);
-    printf("\n");
 
-    char filename[] = "file.txt";
-    unsigned long filesize = 0;
-
-    // get contents of file, verify successful. If failed to get, kill main(). 
-        // would be better served by do-while loop, taking new input on each attempt.
-    char *fileStr = read_file(filename, &filesize);
-    if (strcmp(fileStr, "File not found") == 0 || strcmp(fileStr, "mem alloc failure") == 0) { 
-        return 1;
+        // perform menu option selected or re-prompt for input.
+        if (coerced < 1 || coerced > 3) { printf("That didn't work. Try a valid menu option. They are:\n"); }
+        if (coerced == 1) { encrypt(clearFile, keyFile, cipherFile); }
+        if (coerced == 2) { decrypt(keyFile, cipherFile, decryptedFile); }
+        if (coerced == 3) { return 0; }
     }
-
-    // make outfile string
-    char outFile[256];
-    strcpy(outFile, "encrypted-");
-    strcat(outFile, filename);
-
-    // make outStr string
-    char* outStr = (char*) malloc(filesize);                // allocate space in bytes.
-    if (outStr == NULL) { return 1; }                       // If failure, return
-    strcpy(outStr, "Genma-notded");                         // put stuff in the space
-    write_file (outStr, outFile, filesize);                 // use it for something 
-    free(outStr);                                           // free the space before exit.
-    free(fileStr);    // since small inputs, safe to perform all free() statements at program exit
-
-    
-    return 0;
 }
