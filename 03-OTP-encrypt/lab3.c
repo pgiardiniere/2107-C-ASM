@@ -2,8 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* read_file(char* filename, unsigned long * filesize);
-int write_file(char* output, char* filename, unsigned long filesize);
+// prototypes
+// char* read_file(char* filename, unsigned long * filesize);
+// int write_file(char* output, char* filename, unsigned long filesize);
+// void printMenu()
+
+void printMenu() {
+    printf("    Encrypt a file:  1\n");
+    printf("    Decrypt a file:  2\n");
+    printf("    Exit:            3\n");
+    printf("    Enter a choice:  ");
+}
 
 char* read_file(char* filename, unsigned long * filesize) {
     FILE * file = fopen(filename, "rb");                // open file. If failure, return some text
@@ -29,10 +38,14 @@ int write_file(char* outstr, char* filename, unsigned long filesize) {
     written = fwrite(outstr, 1, filesize, file);        // write output. If not written, return some text
     if (written < filesize) { return -1; }
 
+    fclose(file);
     return written;
 }
 
 int main() {
+
+
+
     char filename[] = "file.txt";
     unsigned long filesize = 0;
 
@@ -40,7 +53,6 @@ int main() {
         // would be better served by do-while loop, taking new input on each attempt.
     char *fileStr = read_file(filename, &filesize);
     if (strcmp(fileStr, "File not found") == 0 || strcmp(fileStr, "mem alloc failure") == 0) { 
-        printf("%s\n", "Can't read file or do mem allocation, killing main()");
         return 1;
     }
 
@@ -53,10 +65,8 @@ int main() {
     char* outStr = (char*) malloc(filesize);                // allocate space in bytes.
     if (outStr == NULL) { return 1; }                       // If failure, return
     strcpy(outStr, "Genma-notded");                         // put stuff in the space
-    write_file (outStr, outFile, filesize);                 // use it for something
+    write_file (outStr, outFile, filesize);                 // use it for something 
     free(outStr);                                           // free the space before exit.
-
-
     free(fileStr);    // since small inputs, safe to simply perform all free() statements at program exit
 
     return 0;
