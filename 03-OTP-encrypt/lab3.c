@@ -43,8 +43,14 @@ int write_file(char* outstr, char* filename, unsigned long filesize) {
 }
 
 int main() {
-
-
+    // Get user input
+    int coerced = 1;
+    do {
+        if (coerced < 1 || coerced > 3) printf("That didn't work. Try a valid menu option. They are:\n");
+        printMenu();
+        scanf("%u", &coerced);
+    } while (coerced < 1 || coerced > 3);
+    printf("\n");
 
     char filename[] = "file.txt";
     unsigned long filesize = 0;
