@@ -18,14 +18,14 @@ char* read_file(char* filename, unsigned long * filesize) {
     FILE * file = fopen(filename, "rb");                // open file. If failure, return some text
     if (file == NULL) { return "File not found"; }
     
-    fseek(file, 0, SEEK_END);                           // get size in bytes, assign to filesize, rewind stream
+    fseek(file, 0, SEEK_END);                           // get size (bytes), assign to filesize, rewind strm
     *filesize = (unsigned long) ftell(file);
     rewind(file);     
     
     char* contents = (char*) malloc(*filesize);          // allocate space in bytes. If failure, return text
     if (contents == NULL) { return "mem alloc failure"; }
 
-    fread(contents, 1, *filesize, file);                // save string to contents, close file, return pointer
+    fread(contents, 1, *filesize, file);                // save string,  close file, return pointer
     fclose(file);
     return contents;
 }
@@ -44,11 +44,14 @@ int write_file(char* outstr, char* filename, unsigned long filesize) {
 
 int main() {
     // Get user input
-    int coerced = 1;
+    int coerced;
+    char in[256];
     do {
-        if (coerced < 1 || coerced > 3) printf("That didn't work. Try a valid menu option. They are:\n");
+        // if (coerced < 1 || coerced > 3) printf("That didn't work. Try a valid menu option. They are:\n");
         printMenu();
-        scanf("%u", &coerced);
+        fgets(in, 256, stdin);
+        in[strcspn(in, "\n")] = 0;
+        coerced = atoi(in);
     } while (coerced < 1 || coerced > 3);
     printf("\n");
 
@@ -63,7 +66,7 @@ int main() {
     }
 
     // make outfile string
-    char* outFile;
+    char outFile[256];
     strcpy(outFile, "encrypted-");
     strcat(outFile, filename);
 
@@ -73,7 +76,8 @@ int main() {
     strcpy(outStr, "Genma-notded");                         // put stuff in the space
     write_file (outStr, outFile, filesize);                 // use it for something 
     free(outStr);                                           // free the space before exit.
-    free(fileStr);    // since small inputs, safe to simply perform all free() statements at program exit
+    free(fileStr);    // since small inputs, safe to perform all free() statements at program exit
 
+    
     return 0;
 }
