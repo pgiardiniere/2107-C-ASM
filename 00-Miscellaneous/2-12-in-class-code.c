@@ -156,8 +156,25 @@ int main() {
 
     
     // #########################
-
+    // Formatted input w/ ScanF
     // #########################
+    unsigned int aUInt = 0;
+
+    // scanf("%c", &c); // Read char to char c
+    // scanf("%d", &anInt); // Read int to int anInt
+    scanf("%u", &aUInt); // Read uint to unsigned int aUInt
+    // scanf("%f", &aFlt); // Read float to float aFlt
+    // scanf("%lf", &aDbl); // Read double to double aDbl
+    // scanf("%s", str); // Read string to char s[]
+    // scanf("%p", &ptr); // Read pointer to int *ptr
+    // scanf("%X", &hex); // Read hexadecimal to int hex
+    // scanf("%e", &sci); // Read scientific to double sci
+
+    // ALWAYS put into the ADDRESS (&) of a variable. 
+        // Typical Exam Q: Puts into VALUE (*) of a variable
+    // EXCEPT for Strings!
+        // Typical Exam Q: scanf("%s", &str) // the str is already passed by reference. The & would fuck it up.
+
 
     return 0;
 }
