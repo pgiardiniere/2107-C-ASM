@@ -1,4 +1,5 @@
 # include <stdio.h>
+# include <stdarg.h>
 
 // For:: Union
 # define NKEYS 3
@@ -20,6 +21,57 @@ union u_tag {
     float fval;
     char *sval;
 };
+
+// ---------- book method: Multiple Arbitrary Arguments ---------- 
+// va_arg == variable argument --- some methods contained in <stdarg.h>
+void minprintf(char *fmt, ...) {
+    /* points to each unnamed arg in turn */
+    va_list ap;
+    char *p,*sval;
+    int ival;
+    double dval;
+    /* make ap point to 1st unnamed arg */
+    va_start(ap,fmt);
+    for(p=fmt;*p;p++) {
+        if(*p != '%') {
+            putchar(*p);
+            continue;
+        }
+        switch(*++p) {
+            case 'd':
+                ival = va_arg(ap,int);
+                printf("%d",ival);
+                break;
+            case 'f':
+                dval = va_arg(ap,double);
+                printf("%f",dval);
+                break;
+            case 's':
+                for(sval = va_arg(ap,char *);*sval;sval++)
+                putchar(*sval);
+                break;
+            default:
+                putchar(*p);
+            break;
+        }
+    }
+    va_end(ap); /* clean up when done */
+}
+
+// ---------- Professor method :: Multiple Arbitrary Arguments ----------
+void PrintFloats (int n, ...) {
+    int i;
+    double val;
+    printf ("Printing floats:");
+    va_list vl;
+    va_start(vl,n);
+    for (i=0;i<n;i++) {
+        val=va_arg(vl,double);
+        printf (" [%.2f]",val);
+    }
+    va_end(vl);
+    printf ("\n");
+}
 
 int main() {
     // #########################
@@ -73,8 +125,39 @@ int main() {
     // BEGIN :: Ch 7 material (see 07 folder)
     // Standard Input & Output
     // #########################
+    // # inclue <stdio.h>
+    printf("\n");
 
+    // when scanf reaches end of file (EOF) it returns -1. This is recognized in C as a symb. const. equal to -1.
+    int i = 0;
+    // while (scanf("%d", &i) != EOF) { printf("%d\n", i); } // works for stuff other than stdin, Ctrl+c to exit
 
+    // printf() formats::
+    printf("Char = %c\n", 'a');
+    printf("Integer, short or char = %d\n", -5);
+    printf("Integer, short or char = %u\n", 10);
+    printf("Double or Float = %.2f\n", 3.4);
+    printf("String = %s\n", "Hello, World!");
+    printf("Pointer = %p\n", 123456);           // hexes & pointers are functionally the same
+    printf("Hex = 0x%08X\n", 123456);           // 08 pads with (0-8) 0s up to 8 places  // initial 0x helps you remember it's hexcode.
+    printf("Scientific = %e\n", 123.456789);
+    printf("Percent = %%\n");
+
+    // #########################
+    // Variable length arg lists
+    // #########################
+    // Consider printf -- has arbitrary input args (0->many
+    // ---------- text method -----------
+    // we use the (...) ellispes in the method which takes arbitrary args
+
+    // ---------- professor method -----------
+    // professor method execution code
+    PrintFloats (3,3.14159,2.71828,1.41421);
+
+    
+    // #########################
+
+    // #########################
 
     return 0;
 }
