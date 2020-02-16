@@ -21,13 +21,13 @@ void printMenu() {
 
 char* read_file(char* filename, unsigned long * filesize) {
     FILE * file = fopen(filename, "rb");                        // Open file.
-    if (file == NULL) { perror("Error: "); exit(0); }           // If failure, print error and quit program
+    if (file == NULL) { perror("Error "); exit(0); }           // If failure, print error and quit program
     fseek(file, 0, SEEK_END);                                   // get size (bytes), assign to filesize, rewind strm
     *filesize = (unsigned long) ftell(file);
     rewind(file);
     
     char* contents = (char*) malloc(*filesize * sizeof(char));  // allocate space in bytes. If failure, return text
-    if (contents == NULL) { perror("Error: "); exit(0); }       // If failure, print error and quit program
+    if (contents == NULL) { perror("Error "); exit(0); }       // If failure, print error and quit program
     fread(contents, 1, *filesize, file);                        // save string,  close file, return pointer
     fclose(file);
     return contents;
@@ -35,7 +35,7 @@ char* read_file(char* filename, unsigned long * filesize) {
 
 int write_file(char* text, char* filename, unsigned long filesize) {
     FILE * file = fopen(filename, "wb");
-    if (file == NULL) { perror("Error: "); exit(0); }
+    if (file == NULL) { perror("Error "); exit(0); }
 
     int written = 0;
     written = fwrite(text, 1, filesize, file);
@@ -63,13 +63,13 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
     char* clearText = read_file(clearFile, &filesize);
     // Make keyText (appropriately sized by filesize), and write to key.txt 
     char* keyText = (char*) malloc(filesize);
-    if (keyText == NULL) { perror("Error: "); exit(0); }
+    if (keyText == NULL) { perror("Error "); exit(0); }
     int length = filesize / sizeof(char);
     make_rand_key(keyText, length);
     write_file(keyText, keyFile, filesize);
     // Make cipherText via OTP (appropriately sized by filesize), and write to cipher.txt
     char* cipherText = (char*) malloc(filesize);
-    if (cipherText == NULL) { perror("Error: "); exit(0); }
+    if (cipherText == NULL) { perror("Error "); exit(0); }
     int i = 0;
     for (i = 0; i < length; i++) { cipherText[i] = clearText[i] ^ keyText[i]; }
     cipherText[i] = '\0';
@@ -88,7 +88,7 @@ void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
     char* keyText = read_file(keyFile, &filesize);
     // Make decryptedText via OTP (appropriately sized by filesize), and write to decrypted.txt
     char* decryptedText = (char*) malloc(filesize);
-    if (decryptedText == NULL) { perror("Error: "); exit(0); }
+    if (decryptedText == NULL) { perror("Error"); exit(0); }
     int length = filesize / sizeof(char);
     int i = 0;
     for (i=0; i < length; i++) { decryptedText[i] = keyText[i] ^ cipherText[i]; }
