@@ -3,21 +3,28 @@
 #include <string.h>
 #include <time.h>
 
-// prototypes
-char* read_file(char* filename, unsigned long * filesize);
-int write_file(char* output, char* filename, unsigned long filesize);
-void printMenu();
-void make_rand_key(char* key, int length);
+// custom datatype struct for Bitmaps
+typedef struct Bitmap {
 
+} Bitmap;
+
+// prototypes :: file IO & output
+char* read_file(char* filename, unsigned long * filesize);
+int  write_file(char* filename, unsigned long   filesize, char* text);
+Bitmap        read_bmp(char *filename);
+unsigned int write_bmp(char *filename, Bitmap m);
+void printMenu();
+
+// prototypes :: encryption
+void make_rand_key(char* key, int length);
 void encrypt(char* clearFile, char* keyFile, char* cipherFile);
 void decrypt(char* keyFile, char* cipherFile, char* decryptedFile);
+void encode ();
+void decode ();
 
-void printMenu() {
-    printf("    Encrypt a file:  1\n");
-    printf("    Decrypt a file:  2\n");
-    printf("    Exit:            3\n");
-    printf("    Enter a choice:  ");
-}
+// #########################
+// LAB 3 functions
+// #########################
 
 char* read_file(char* filename, unsigned long * filesize) {
     FILE * file = fopen(filename, "rb");                        // Open file.
@@ -33,7 +40,7 @@ char* read_file(char* filename, unsigned long * filesize) {
     return contents;
 }
 
-int write_file(char* text, char* filename, unsigned long filesize) {
+int write_file(char* filename, unsigned long filesize, char* text) {
     FILE * file = fopen(filename, "wb");
     if (file == NULL) { perror("Error "); exit(0); }
 
@@ -45,8 +52,7 @@ int write_file(char* text, char* filename, unsigned long filesize) {
     return written;
 }
 
-// makes random key in-place (through pointer), and writes it to a file.
-void make_rand_key(char* key, int length) {
+void make_rand_key(char* key, int length) {     // makes random key in-place (through pointer), and writes it to a file.
     if (length < 0) exit(0);                    // handle case of negative length (as requested in doc)
     int i = 0;
     srand(time(NULL));
@@ -66,14 +72,14 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
     if (keyText == NULL) { perror("Error "); exit(0); }
     int length = filesize / sizeof(char);
     make_rand_key(keyText, length);
-    write_file(keyText, keyFile, filesize);
+    write_file(keyFile, filesize, keyText);
     // Make cipherText via OTP (appropriately sized by filesize), and write to cipher.txt
     char* cipherText = (char*) malloc(filesize);
     if (cipherText == NULL) { perror("Error "); exit(0); }
     int i = 0;
     for (i = 0; i < length; i++) { cipherText[i] = clearText[i] ^ keyText[i]; }
     cipherText[i] = '\0';
-    write_file(cipherText, cipherFile, filesize);
+    write_file(cipherFile, filesize, cipherText);
 
     free(clearText);
     free(keyText);
@@ -93,11 +99,42 @@ void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
     int i = 0;
     for (i=0; i < length; i++) { decryptedText[i] = keyText[i] ^ cipherText[i]; }
     decryptedText[i] = '\0';
-    write_file(decryptedText, decryptedFile, filesize);
+    write_file(decryptedFile, filesize, decryptedText);
 
     free(decryptedText);
     free(keyText);
     free(cipherText);
+}
+
+// #########################
+// LAB 4 functions
+// #########################
+
+Bitmap read_bmp(char *filename) {
+    Bitmap bmp;
+    return bmp;
+}
+
+unsigned int write_bmp(char *filename, Bitmap m)  {
+    unsigned int i = 1;
+    return i;
+}
+
+void encode() {
+    printf("Encoding!\n");
+}
+
+void decode() {
+    printf("Decoding!\n");
+}
+
+void printMenu() {
+    printf("    Encrypt a file:  1\n");
+    printf("    Decrypt a file:  2\n");
+    printf("    Encode a bitmap: 3\n");
+    printf("    Decode a bitmap: 4\n");
+    printf("    Exit:            5\n");
+    printf("    Enter a choice:  ");
 }
 
 int main() {
@@ -110,16 +147,18 @@ int main() {
     // User input loop :: choose between 3 menu options.
     int coerced = 1;
     char in[256];
-    while (coerced != 3) {
+    while (1) {
         printMenu();
         fgets(in, 256, stdin);
         in[strcspn(in, "\n")] = 0;          // fgets reads in newline char, replace it w/ null (ascii 0)
         coerced = atoi(in);
 
         // perform menu option selected or re-prompt for input.
-        if (coerced < 1 || coerced > 3) { printf("That didn't work. Try a valid menu option. They are:\n"); }
+        if (coerced < 1 || coerced > 5) { printf("That didn't work. Try a valid menu option. They are:\n"); }
         if (coerced == 1) { encrypt(clearFile, keyFile, cipherFile); }
         if (coerced == 2) { decrypt(keyFile, cipherFile, decryptedFile); }
-        if (coerced == 3) { return 0; }
+        if (coerced == 3) { encode(); }
+        if (coerced == 4) { decode(); }
+        if (coerced == 5) { return 0; }
     }
 }
