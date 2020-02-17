@@ -11,17 +11,18 @@
 
 // custom datatype struct for Bitmaps
 typedef struct Bitmap {
-    unsigned int filesize;
+    unsigned long filesize;
     unsigned int imageWidth;
     unsigned int imageHeight;
     char * bmpStr;
 } Bitmap;
 
 Bitmap construct() {
-    unsigned int filesize;
+    unsigned long filesize;
     unsigned int imageWidth;
     unsigned int imageHeight;
     char* bmpStr = (char*) malloc(10 * sizeof(char));   // placeholder malloc() --- enter real size later
+    if (bmpStr == NULL) { perror("Error "); exit(1); }
     
     int i = 0;                                          // placeholder string
     while (i < 5) { bmpStr[i] = 'a'; i++; }
@@ -51,13 +52,13 @@ void decode ();
 
 char* read_file(char* filename, unsigned long * filesize) {
     FILE * file = fopen(filename, "rb");                        // Open file.
-    if (file == NULL) { perror("Error "); exit(0); }           // If failure, print error and quit program
+    if (file == NULL) { perror("Error "); exit(1); }           // If failure, print error and quit program
     fseek(file, 0, SEEK_END);                                   // get size (bytes), assign to filesize, rewind strm
     *filesize = (unsigned long) ftell(file);
     rewind(file);
     
     char* contents = (char*) malloc(*filesize * sizeof(char));  // allocate space in bytes. If failure, return text
-    if (contents == NULL) { perror("Error "); exit(0); }       // If failure, print error and quit program
+    if (contents == NULL) { perror("Error "); exit(1); }       // If failure, print error and quit program
     fread(contents, 1, *filesize, file);                        // save string,  close file, return pointer
     fclose(file);
     return contents;
@@ -65,18 +66,18 @@ char* read_file(char* filename, unsigned long * filesize) {
 
 int write_file(char* filename, unsigned long filesize, char* text) {
     FILE * file = fopen(filename, "wb");
-    if (file == NULL) { perror("Error "); exit(0); }
+    if (file == NULL) { perror("Error "); exit(1); }
 
     int written = 0;
     written = fwrite(text, 1, filesize, file);
-    if (written < filesize) { printf("Could not write all characters\n"); exit(0); }
+    if (written < filesize) { printf("Could not write all characters\n"); exit(1); }
 
     fclose(file);
     return written;
 }
 
 void make_rand_key(char* key, int length) {     // makes random key in-place (through pointer), and writes it to a file.
-    if (length < 0) exit(0);                    // handle case of negative length (as requested in doc)
+    if (length < 0) exit(1);                    // handle case of negative length (as requested in doc)
     int i = 0;
     srand(time(NULL));
     while (i < length) {
@@ -92,13 +93,13 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
     char* clearText = read_file(clearFile, &filesize);
     // Make keyText (appropriately sized by filesize), and write to key.txt 
     char* keyText = (char*) malloc(filesize);
-    if (keyText == NULL) { perror("Error "); exit(0); }
+    if (keyText == NULL) { perror("Error "); exit(1); }
     int length = filesize / sizeof(char);
     make_rand_key(keyText, length);
     write_file(keyFile, filesize, keyText);
     // Make cipherText via OTP (appropriately sized by filesize), and write to cipher.txt
     char* cipherText = (char*) malloc(filesize);
-    if (cipherText == NULL) { perror("Error "); exit(0); }
+    if (cipherText == NULL) { perror("Error "); exit(1); }
     int i = 0;
     for (i = 0; i < length; i++) { cipherText[i] = clearText[i] ^ keyText[i]; }
     cipherText[i] = '\0';
@@ -117,7 +118,7 @@ void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
     char* keyText = read_file(keyFile, &filesize);
     // Make decryptedText via OTP (appropriately sized by filesize), and write to decrypted.txt
     char* decryptedText = (char*) malloc(filesize);
-    if (decryptedText == NULL) { perror("Error"); exit(0); }
+    if (decryptedText == NULL) { perror("Error"); exit(1); }
     int length = filesize / sizeof(char);
     int i = 0;
     for (i=0; i < length; i++) { decryptedText[i] = keyText[i] ^ cipherText[i]; }
@@ -134,6 +135,12 @@ void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
 // #########################
 
 Bitmap read_bmp(char* filename) {
+    FILE * file = fopen(filename, "rb");
+    if (file == NULL) { perror("Error "); exit(1); }
+    fseek(file, 0, SEEK_END);
+    unsigned long filesize = (unsigned long) ftell(file);
+    rewind(file);
+
     Bitmap bmp;
     return bmp;
 }
