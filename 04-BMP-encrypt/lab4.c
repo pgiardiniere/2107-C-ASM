@@ -21,7 +21,11 @@ Bitmap construct() {
     unsigned int filesize;
     unsigned int imageWidth;
     unsigned int imageHeight;
-    // malloc() a char[] which can fit contents of the file
+    char* bmpStr = (char*) malloc(10 * sizeof(char));   // placeholder malloc() --- enter real size later
+    
+    int i = 0;                                          // placeholder string
+    while (i < 5) { bmpStr[i] = 'a'; i++; }
+    bmpStr[i] = '\0';
 
     Bitmap bmp = {filesize, imageWidth, imageHeight, bmpStr}; 
     return bmp;
@@ -143,7 +147,7 @@ void encode(char* clearBmp) {
     printf("Encoding!\n");
     // Get bmp
     // unsigned long filesize = 0;      // not used
-    Bitmap bmp = read_bmp(clearFile);
+    Bitmap bmp = read_bmp(clearBmp);
 }
 
 void decode() {
