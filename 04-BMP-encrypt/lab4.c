@@ -3,15 +3,34 @@
 #include <string.h>
 #include <time.h>
 
+// bitmap constants
+#define HEADER_SIZE 54
+#define SIZE_BEGIN 2
+#define WIDTH_BEGIN 18
+#define HEIGHT_BEGIN 22
+
 // custom datatype struct for Bitmaps
 typedef struct Bitmap {
-
+    unsigned int filesize;
+    unsigned int imageWidth;
+    unsigned int imageHeight;
+    char * bmpStr;
 } Bitmap;
+
+Bitmap construct() {
+    unsigned int filesize;
+    unsigned int imageWidth;
+    unsigned int imageHeight;
+    // malloc() a char[] which can fit contents of the file
+
+    Bitmap bmp = {filesize, imageWidth, imageHeight, bmpStr}; 
+    return bmp;
+}
 
 // prototypes :: file IO & output
 char* read_file(char* filename, unsigned long * filesize);
 int  write_file(char* filename, unsigned long   filesize, char* text);
-Bitmap        read_bmp(char *filename);
+Bitmap       read_bmp (char *filename);
 unsigned int write_bmp(char *filename, Bitmap m);
 void printMenu();
 
@@ -110,18 +129,21 @@ void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
 // LAB 4 functions
 // #########################
 
-Bitmap read_bmp(char *filename) {
+Bitmap read_bmp(char* filename) {
     Bitmap bmp;
     return bmp;
 }
 
-unsigned int write_bmp(char *filename, Bitmap m)  {
+unsigned int write_bmp(char* filename, Bitmap m)  {
     unsigned int i = 1;
     return i;
 }
 
-void encode() {
+void encode(char* clearBmp) {
     printf("Encoding!\n");
+    // Get bmp
+    // unsigned long filesize = 0;      // not used
+    Bitmap bmp = read_bmp(clearFile);
 }
 
 void decode() {
@@ -138,13 +160,17 @@ void printMenu() {
 }
 
 int main() {
-    // file strings
-    char clearFile[] = "clear.txt";
+    char clearFile[] = "clear.txt";         // file strings :: lab3
     char cipherFile[] = "cipher.txt";
     char keyFile[] = "key.txt";
     char decryptedFile[] = "decrypted.txt";
+    
+    char clearBmp[] = "clear.bmp";          // file strings :: lab4
+    char cipherBmp[] = "coded.bmp";    
+    char keyBmp[] = "bmpKey.txt";
+    char decryptedBmp[] = "decoded.bmp";
 
-    // User input loop :: choose between 3 menu options.
+    // User input loop :: choose between 5 menu options.
     int coerced = 1;
     char in[256];
     while (1) {
@@ -157,8 +183,8 @@ int main() {
         if (coerced < 1 || coerced > 5) { printf("That didn't work. Try a valid menu option. They are:\n"); }
         if (coerced == 1) { encrypt(clearFile, keyFile, cipherFile); }
         if (coerced == 2) { decrypt(keyFile, cipherFile, decryptedFile); }
-        if (coerced == 3) { encode(); }
-        if (coerced == 4) { decode(); }
+        if (coerced == 3) { encode (clearBmp); }
+        if (coerced == 4) { decode (); }
         if (coerced == 5) { return 0; }
     }
 }
