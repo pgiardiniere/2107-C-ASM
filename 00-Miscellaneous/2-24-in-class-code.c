@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct String {
@@ -8,7 +9,7 @@ typedef struct String {
 } String;
 
 String make(int length) {
-    char s[length];
+    char *s = (char*) malloc(length * sizeof(char));
     String str = { s, length, 0 };
     return str;
 }
@@ -46,9 +47,10 @@ int main() {
     insert('H', &s);
     insert('e', &s);
     insert('l', &s);
-    insert('l', &s);
-    insert('o', &s);
+    // insert('l', &s);
+    // insert('o', &s);
 
+    print(s);
     del(&s);
 
     return 0;
