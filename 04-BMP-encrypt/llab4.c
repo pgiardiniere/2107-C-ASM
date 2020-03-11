@@ -4,8 +4,8 @@
 #include <time.h>
 
 // bitmap constants
-#define SIZE_BEGIN 1500056      // 1000 x 500 x 3 (bytes per pixel, 24 bit color depth) + 56 (header)
-#define HEADER_SIZE 56
+#define SIZE_BEGIN 1500000      // 1,500,000 = 1000 x 500 x 3 (bytes / pixel. 24 bit-depth) + 56 (header)
+#define HEADER_SIZE 56          // actually, disregard header. we aren't reading/writing at all. SIZE_BEGIN.
 #define WIDTH_BEGIN 1000
 #define HEIGHT_BEGIN 500
 
@@ -33,36 +33,37 @@ void decode ();
 
 Bitmap construct() {    
     unsigned long garbage = 0; 
-    char * str = read_file("sample.bmp", &garbage);         printf("garbage: %lu\n", garbage);
+    char * str = read_file("sample.bmp", &garbage);
 
     // debug : check str[]
     int i = 0;
-    while (i < 120) {
+    while (i < strlen(str)) {
         printf("%c", str[i]);
         if (i %  3 == 0) printf(" ");
         if (i % 12 == 0) printf("\n");
         i++;
-    }
+    }  printf("\n-i is: %d\n", i);
 
     Bitmap bmp = {SIZE_BEGIN, WIDTH_BEGIN, HEIGHT_BEGIN, str};
     return bmp;
 }
 
 // #########################
-// LAB 3 functions
+// LAB 3 functions (w/ additional logic for lab4)
 // #########################
 
 char* read_file(char* filename, unsigned long * filesize) {
-    FILE * file = fopen(filename, "rb");                        // Open file.
-    if (file == NULL) { perror("Error "); exit(1); }            // If failure, print error and quit program
-    fseek(file, 0, SEEK_END);                                   // get size (bytes), assign to filesize, rewind strm
+    FILE * file = fopen(filename, "rb");                            // Open file.
+    if (file == NULL) { perror("Error "); exit(1); }                // If failure, print error and quit program
+    if (strcmp(filename, "clear.txt")) fseek(file,  0, SEEK_END);   // get size (bytes), assign to filesize, rewind strm
+    else                               fseek(file, 100, SEEK_END);
     *filesize = (unsigned long) ftell(file);
     rewind(file);
     
     char* contents = (char*) malloc(*filesize * sizeof(char));  // allocate space in bytes. If failure, return text
     if (contents == NULL) { perror("Error "); exit(1); }        // If failure, print error and quit program
     fread(contents, 1, *filesize, file);                        // save string,  close file, return pointer
-    fclose(file);
+    fclose(file);  fread()
     return contents;
 }
 
@@ -70,12 +71,13 @@ int write_file(char* filename, unsigned long filesize, char* text) {
     FILE * file = fopen(filename, "wb");
     if (file == NULL) { perror("Error "); exit(1); }
 
-    int written = 0;
-    written = fwrite(text, 1, filesize, file);
-    if (written < filesize) { printf("Could not write all characters\n"); exit(1); }
-
-    fclose(file);
-    return written;
+    if (strcmp(filename, "")) {
+        int written = 0;
+        written = fwrite(text, 1, filesize, file);
+        if (written < filesize) { printf("Could not write all characters\n"); exit(1); }
+        fclose(file);
+        return written;
+    }
 }
 
 void make_rand_key(char* key, int length) {     // makes random key in-place (through pointer), and writes it to a file.
@@ -147,10 +149,15 @@ int main() {
     char keyFile[] = "key.txt";
     char decryptedFile[] = "decrypted.txt";
 
+    char initBmp[] = "sample.bmp";          // file strings :: lab4 (additional)
+    char encodedBmp[] = "encoded.bmp";
+    char decodedBmp[] = "decoded.bmp";
 
     Bitmap bmp = construct();
     printf("Bitmap 'bmp' data field 'filesize' is: %lu\n", bmp.filesize);
     printf("Bitmap 'bmp' data field 'str' is: %s\n", bmp.str);
+    free(bmp.str);
+
     return 0;
 
     // User input loop :: choose between 5 menu options.
@@ -170,7 +177,7 @@ int main() {
         if (coerced == 5) { 
 
             // free all memory before exit
-            free (bmp.str);
+            free(bmp.str);
             return 0;
         }
     }

@@ -175,7 +175,7 @@ int main() {
     char cipherFile[] = "cipher.txt";
     char keyFile[] = "key.txt";
     char decryptedFile[] = "decrypted.txt";
-    
+
     char clearBmp[] = "clear.bmp";          // file strings :: lab4
     char cipherBmp[] = "coded.bmp";    
     char keyBmp[] = "bmpKey.txt";
