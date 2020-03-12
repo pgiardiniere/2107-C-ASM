@@ -1,12 +1,10 @@
-/*
-    This program should accept numeric values in hexadecimal,
-    decimal, octal and binary formats as:
+// This program should accept numeric values in hexadecimal,
+// decimal, octal and binary formats as:
+//     Hex 0x0 to 0xFFFFFFFF
+//     Dec 0   to 4294967295
+//     Oct o0  to o37777777777
+//     Bin b0  to b11111111111111111111111111111111
 
-        Hex 0x0 to 0xFFFFFFFF
-        Dec 0 to 4294967295
-        Oct o0 to o37777777777
-        Bin b0 to b11111111111111111111111111111111
-*/
 #include <stdio.h>
 #include <string.h>
 
@@ -21,8 +19,7 @@ void uint_to_bin(unsigned int n, char *output);
 
 int error = 0;
 
-int main(){
-
+int main() {
     char input[50];
     unsigned int n = 0;
     char output[50];
@@ -35,24 +32,15 @@ int main(){
     // printf("convert > ");
     // gets(input);
 
-    unsigned int x = 0;
-    unsigned int y = 48;
-    unsigned int z = 65;
-    printf("x,y,z = %d %d %d\n", x, y, z);
-    printf("x,y,z = %c %c %c\n", x, y, z);
-
-    x += 48;
-    printf("x,y,z = %c %c %c\n", x, y, z);
-
-    char c[1];
-    c[0] = 9 + 48;
-    printf("%c\n", c[0]);
-
     unsigned int m = 32;
     uint_to_hex(m, output);
-    printf("hex value of %d is %s\n", m, output);
+    printf("hex value of %d is %s\n\n", m, output);
 
+    uint_to_oct(m, output);
+    printf("oct value of %d is %s\n\n", m, output);
 
+    uint_to_bin(m, output);
+    printf("oct value of %d is %s\n\n", m, output);
 
     return -1;
 
@@ -127,12 +115,9 @@ unsigned int bin_to_uint(char *input){
     return result;
 }
 
-
-/*
-    This function converts from unsigned int to a hex
-    char array.  Try this on paper before coding.
-*/
-// Convert a unsigned integer char array to hexadecimal
+// ########################################
+//  Conversions :: Unsigned ints to Hex/Oct/Bin
+// ########################################
 void uint_to_hex(unsigned int n, char *output){
     unsigned int remainder;
     unsigned int dividend = n;
@@ -142,7 +127,7 @@ void uint_to_hex(unsigned int n, char *output){
 
     while (dividend != 0) {
         remainder = dividend % 16;
-        dividend = dividend/16;
+        dividend = dividend / 16;
         if (remainder > 9) { temp[i] = remainder + 55; }
         else               { temp[i] = remainder + 48; }
         i++;
@@ -158,28 +143,58 @@ void uint_to_hex(unsigned int n, char *output){
         i--;
     }
     output[j] = '\0';       // Put null at end of buffer
-
-    printf("temp has %s\n", temp);
-    printf("output has %s\n", output);
     return;
 }
 
-
-/*
-    Copy uint_to_hex() and modify for octal
-*/
-// Convert a unsigned integer char array to octal
 void uint_to_oct(unsigned int n, char *output){
+    unsigned int remainder;
+    unsigned int dividend = n;
+    // Declare a char array buffer
+    char temp[50];
+    int i = 0;
 
+    while (dividend != 0) {
+        remainder = dividend % 8;
+        dividend = dividend / 8;
+        temp[i] = remainder + 48;
+        i++;
+    }
+    temp[i] = '\0';         // Put null at end of buffer
+
+    output[0] = '0';        // Format output (octal -> '0' integer literal). Then reverse-copy temp to yield output octal string.
+    int j = 1; i--;
+    while (i > -1) {
+        output[j] = temp[i];
+        j++; 
+        i--;
+    }
+    output[j] = '\0';       // Put null at end of buffer
     return;
 }
 
-
-/*
-    Copy uint_to_oct() and modify for binary
-*/
-// Convert a unsigned integer char array to binary
 void uint_to_bin(unsigned int n, char *output){
+    unsigned int remainder;
+    unsigned int dividend = n;
+    // Declare a char array buffer
+    char temp[50];
+    int i = 0;
 
+    while (dividend != 0) {
+        remainder = dividend % 2;
+        dividend = dividend / 2;
+        temp[i] = remainder + 48;
+        i++;
+    }
+    temp[i] = '\0';         // Put null at end of buffer
+
+    output[0] = '0';        // Format output (Bin -> '0b' integer literal). Then reverse-copy temp to yield output binary string.
+    output[1] = 'b';
+    int j = 2; i--;
+    while (i > -1) {
+        output[j] = temp[i];
+        j++; 
+        i--;
+    }
+    output[j] = '\0';       // Put null at end of buffer
     return;
 }
