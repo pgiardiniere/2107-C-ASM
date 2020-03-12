@@ -2,15 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
 // bitmap constants
 #define SIZE_BEGIN 1500000      // 1,500,000 = 1000 x 500 x 3 (bytes / pixel. 24 bit-depth) + 56 (header)
 #define HEADER_SIZE 56          // actually, disregard header. we aren't reading/writing at all. SIZE_BEGIN.
 #define WIDTH_BEGIN 1000
 #define HEIGHT_BEGIN 500
 
-// custom datatype struct for Bitmaps
-typedef struct Bitmap {
+typedef struct Bitmap {         // custom datatype struct for Bitmaps
     unsigned long filesize;
     unsigned int imageWidth;
     unsigned int imageHeight;
@@ -18,40 +16,22 @@ typedef struct Bitmap {
 } Bitmap;
 
 // Prototypes
-char* read_file(char* filename, unsigned long * filesize);              // file IO & output block
+char* read_file(char* filename, unsigned long * filesize);
 int  write_file(char* filename, unsigned long   filesize, char* text);
 Bitmap       read_bmp (char *filename);
 unsigned int write_bmp(char *filename, Bitmap m);
 void printMenu();
                     
-void make_rand_key(char* key, int length);                              // encryption block
+void make_rand_key(char* key, int length);
 void encrypt(char* clearFile, char* keyFile, char* cipherFile);
 void decrypt(char* keyFile, char* cipherFile, char* decryptedFile);
 
 void encode ();
 void decode ();
 
-// Bitmap construct() {    
-//     unsigned long garbage = 0; 
-//     char * str = read_file("sample.bmp", &garbage);
-
-//     // debug : check str[]
-//     int i = 0;
-//     while (i < strlen(str)) {
-//         printf("%c", str[i]);
-//         if (i %  3 == 0) printf(" ");
-//         if (i % 12 == 0) printf("\n");
-//         i++;
-//     }  printf("\n-i is: %d\n", i);
-
-//     Bitmap bmp = {SIZE_BEGIN, WIDTH_BEGIN, HEIGHT_BEGIN, str};
-//     return bmp;
-// }
-
-// #########################
-// LAB 3 functions (w/ additional logic for lab4)
-// #########################
-
+// ##############################
+// File IO block
+// ##############################
 char* read_file(char* filename, unsigned long * filesize) {
     FILE * file = fopen(filename, "rb");                            // Open file.
     if (file == NULL) { perror("Error "); exit(1); }                // If failure, print error and quit program
@@ -90,6 +70,11 @@ void make_rand_key(char* key, int length) {     // makes random key in-place (th
     }
 }
 
+// ##############################
+// Driver methods block
+// ##############################
+
+// First  Step : Encrypt
 void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
     printf("Encrypting!\n");
     // Get clearText and filesize
@@ -114,6 +99,11 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
     free(cipherText);
 }
 
+// Second Step : Encode
+
+// Third  Step : Decode
+
+// Fourth Step : Decrypt
 void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
     printf("Decrypting!\n");
     // Get cipherText, keyText, and filesize
@@ -134,14 +124,6 @@ void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
     free(cipherText);
 }
 
-void printMenu() {
-    printf("    Encrypt a file:  1\n");
-    printf("    Decrypt a file:  2\n");
-    printf("    Encode a bitmap: 3\n");
-    printf("    Decode a bitmap: 4\n");
-    printf("    Exit:            5\n");
-    printf("    Enter a choice:  ");
-}
 
 int main() {
     // file strings
@@ -178,4 +160,13 @@ int main() {
             return 0;
         }
     }
+}
+
+void printMenu() {
+    printf("    Encrypt a file:  1\n");
+    printf("    Decrypt a file:  2\n");
+    printf("    Encode a bitmap: 3\n");
+    printf("    Decode a bitmap: 4\n");
+    printf("    Exit:            5\n");
+    printf("    Enter a choice:  ");
 }
