@@ -17,108 +17,102 @@ void uint_to_hex(unsigned int n, char *output);
 void uint_to_oct(unsigned int n, char *output);
 void uint_to_bin(unsigned int n, char *output);
 
-int error = 0;
-
 int main() {
     char input[50];
     unsigned int n = 0;
     char output[50];
 
-    // so, we are intaking __whatever__ base.
-    // we make that into an unsigned int
-    // then, we turn that unsigned int   into __whatever__ base.
+    printf("Enter a binary, octal, decimal or hexadecimal number\n");
+    printf("convert > ");
+    gets(input);
 
-    // printf("Enter a binary, octal, decimal or hexadecimal number\n");
-    // printf("convert > ");
-    // gets(input);
+    // Detect input data type, make into unsigned int
+    if(input[0] == '0' && input[1] == 'x')       n = hex_to_uint(input);    // Hexadecimal
+    else if (input[0] >= '0' && input[0] <= '9') n = dec_to_uint(input);    // Decimal
+    else if (input[0] == 'o')                    n = oct_to_uint(input);    // Octal
+    else if (input[0] == 'b')                    n = bin_to_uint(input);    // Binary
+    else printf("ERROR: Unknown data type: %s\n", input);                   // Unknown/invalid type
 
-    unsigned int m = 32;
-    uint_to_hex(m, output);
-    printf("hex value of %d is %s\n\n", m, output);
-
-    uint_to_oct(m, output);
-    printf("oct value of %d is %s\n\n", m, output);
-
-    uint_to_bin(m, output);
-    printf("oct value of %d is %s\n\n", m, output);
-
-    return -1;
-
-    // // Detect input data type
-    // if(input[0] == '0' && input[1] == 'x')       n = hex_to_uint(input);    // Hexadecimal
-    // else if (input[0] >= '0' && input[0] <= '9') n = dec_to_uint(input);    // Decimal
-    // else if (input[0] == 'o')                    n = oct_to_uint(input);    // Octal
-    // else if (input[0] == 'b')                    n = bin_to_uint(input);    // Binary
-    // else printf("ERROR: Unknown data type: %s\n", input);                   // Unknown/invalid type
-
-    // // Print results
-    // printf("The decimal value of %s is %u\n", input, n);
-    // uint_to_hex(n, output);
-    // printf("The hexadecimal value of %s is %s\n", input, output);
-    // uint_to_oct(n, output);
-    // printf("The octal value of %s is %s\n", input, output);
-    // uint_to_bin(n, output);
-    // printf("The binary value of %s is %s\n", input, output);
+    // Print unsigned int as Dec, Hex, Oct, and Bin
+    printf("The decimal value of %s is %u\n", input, n);
+    uint_to_hex(n, output);
+    printf("The hexadecimal value of %s is %s\n", input, output);
+    uint_to_oct(n, output);
+    printf("The octal value of %s is %s\n", input, output);
+    uint_to_bin(n, output);
+    printf("The binary value of %s is %s\n", input, output);
 
     return 0;
 }
 
+// ########################################
+//  Char[] (hex, oct, bin) to Unsigned Ints
+// ########################################
 unsigned int hex_to_uint(char *input){
     unsigned int result = 0;
-    unsigned int mult = 1;
+    unsigned int multiplier = 1;
 
-    int i;
-    for (i = 2; i < sizeof(input); i++) {
-        // If between 0 and 9 add 0 to 9 to result with multiplier
-
-        // If between A and F add 10 to 15 to result with multiplier
-
-        // Error - exit
-
-        // Advance multiplier to next position value
-        mult *= 2;
+    int i = 0;                      // walk i to end of data. must process string in reverse
+    while (input[i]) { i++; } i--;
+    
+    while (i > 1) {
+        if ( input[i] >= 48 && input[i] <= 57 ) result += (input[i] - 48) * multiplier;  // if   chars 0-9, multiply and add to result 
+        else                                    result += (input[i] - 55) * multiplier;  // else chars A-F, multiply and add to result
+        multiplier *= 16;
+        i--;
     }
-
     return result;
 }
 
-
-/*
-    Copy hex_to_uint() and modify for decimal input.
-*/
-// Convert a unsigned integer char array to uint
 unsigned int dec_to_uint(char *input){
     unsigned int result = 0;
+    unsigned int multiplier = 1;
 
+    int i = 0;
+    while (input[i]) { i++; } i--;
+    
+    while (i > -1) {
+        result += (input[i] - 48) * multiplier;  // assume good input - i.e. chars 0-9, multiply and add to result 
+        multiplier *= 10;
+        i--;
+    }
     return result;
 }
 
-
-/*
-    Copy dec_to_uint() and modify for octal input.
-*/
-// Convert a octal char array to uint
 unsigned int oct_to_uint(char *input){
     unsigned int result = 0;
+    unsigned int multiplier = 1;
 
+    int i = 0;
+    while (input[i]) { i++; } i--;
+    
+    while (i > 0) {
+        result += (input[i] - 48) * multiplier;  // assume good input - i.e. chars 0-7, multiply and add to result 
+        multiplier *= 8;
+        i--;
+    }
     return result;
 }
 
-
-/*
-    Copy oct_to_uint() and modify for binary input.
-*/
-// Convert a binary char array to unsigned int
 unsigned int bin_to_uint(char *input){
     unsigned int result = 0;
+    unsigned int multiplier = 1;
 
+    int i = 0;
+    while (input[i]) { i++; } i--;
+    
+    while (i > 0) {
+        result += (input[i] - 48) * multiplier;  // assume good input - i.e. chars 0-7, multiply and add to result 
+        multiplier *= 2;
+        i--;
+    }
     return result;
 }
 
 // ########################################
 //  Conversions :: Unsigned ints to Hex/Oct/Bin
 // ########################################
-void uint_to_hex(unsigned int n, char *output){
+void uint_to_hex(unsigned int n, char *output) {
     unsigned int remainder;
     unsigned int dividend = n;
     // Declare a char array buffer
