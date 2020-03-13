@@ -15,6 +15,16 @@ typedef struct Bitmap {
     char * str;
 } Bitmap;
 
+char* read_bmp(char* filename, unsigned long * filesize) {
+    FILE* file = fopen(filename, "rb");
+    if (file == NULL) { perror("Error "); exit(1); }
+
+    fseek(file, 0, SEEK_END);
+
+
+    return ;
+}
+
 int main() {
     unsigned long size = 1500056;
     unsigned int width = 1000;
@@ -22,6 +32,13 @@ int main() {
     char str[1500056];
     Bitmap bmp = {size, width, length, str};
 
-    
+    int bits = sizeof(int) * 8;
+    printf("size of int (bytes) is %d\n", sizeof(int));
+    printf("size of int (bits ) is %d\n", bits);
+
+    char filename[64] = "sample.bmp";
+    read_bmp(filename, &size);          // updates size according to filesize.
+
+
     return 0;       
 }
