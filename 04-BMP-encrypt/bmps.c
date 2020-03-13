@@ -22,9 +22,6 @@ int main() {
     char str[1500056];
     Bitmap bmp = {size, width, length, str};
 
-    strcpy(str, "hey");
-    printf("%s\n", str);
-
-    return 0;
-        
+    
+    return 0;       
 }

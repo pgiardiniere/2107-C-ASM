@@ -1,3 +1,5 @@
+// The code here was exported from bmps.c
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,9 +7,23 @@
 
 int main() {
     // #########################
+    // Useful String Functions
+    // #########################
+    char str[64];
+    strcpy(str, "hey");             // strcpy  --- copies entire string FROM dest INTO src
+    printf("%s\n", str);
+    strncpy(str, "you idiot", 3);   // strncpy --- copies only Num characters FROM dest INTO src
+    printf("%s\n", str);
+
+    strcat(str, " idiot");          // strcat   --- copies entire string FROM dest INTO src
+    printf("%s\n", str);
+    strncat(str, " jk ily", 3);     // strncat  --- copies only Num character FROM dest INTO src
+    printf("%s\n", str);
+
+    // #########################
     // ALL THE WAYS TO SEGFAULT WITH STRINGS IN C HAHAHAHAHAHHAHAHAHAAHAHAHAHA
     // #########################
-    
+
     // This code segfaults
     // Why? String Literals behave differently when assigned to
         // char* varName
