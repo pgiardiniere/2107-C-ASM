@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 // bitmap constants
-#define SIZE_BEGIN 1500000      // 1,500,000 = 1000 x 500 x 3 (bytes / pixel. 24 bit-depth) + 56 (header)
+#define SIZE_BEGIN 1500056      // 1,500,000 = 1000 x 500 x 3 (bytes / pixel. 24 bit-depth) + 56 (header)
 #define HEADER_SIZE 56          // actually, disregard header. we aren't reading/writing at all. SIZE_BEGIN.
 #define WIDTH_BEGIN 1000
 #define HEIGHT_BEGIN 500
@@ -35,10 +35,7 @@ void decode ();
 char* read_file(char* filename, unsigned long * filesize) {
     FILE * file = fopen(filename, "rb");                            // Open file.
     if (file == NULL) { perror("Error "); exit(1); }                // If failure, print error and quit program
-    if (strcmp(filename, "clear.txt") == 0 || strcmp(filename, "key.txt") == 0 || strcmp(filename, "cipher.txt") == 0)
-        fseek(file,  0, SEEK_END);                                // get size (bytes), assign to filesize, rewind strm
-    else 
-        fseek(file, 56, SEEK_END);            // Case NOT reading a lab3 file :: read only xyz contents (might be superfluous)
+    fseek(file,  0, SEEK_END);                                // get size (bytes), assign to filesize, rewind strm
     *filesize = (unsigned long) ftell(file);
     rewind(file);
     
