@@ -55,8 +55,6 @@ char* read_bmp(char* filename, unsigned long * filesize) {
     // printf("unsigned int SIZE is %u\n", str[i]);
     // i = HEIGHT_BEGIN;       // i.e. offset = 22
     // printf("unsigned int SIZE is %u\n", str[i]);
-
-
 }
 
 int main() {
