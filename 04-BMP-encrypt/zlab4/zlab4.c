@@ -148,14 +148,20 @@ Bitmap encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
     for (i = 0; i < cipherSize; i++) {
         val = cipherText[i];
         while (val) {
-            while (str[j]) {
+            while (bmp.str[j]) {
                 if (val & 1)
-                    { bmp.str[j] |= 1; break; }                 // write '1' to least bit in str[j] (0000 0001)
+                    { bmp.str[j] |= 1; printf("1 "); break; }                 // write '1' to least bit in str[j] (0000 0001)
                 else
-                    { bmp.str[j] &= 254; break; }               // write '0' to least bit in str[j] (1111 1110)
+                    { bmp.str[j] &= 254; printf("0 "); break; }               // write '0' to least bit in str[j] (1111 1110)
             }            
             j++;
             val >>= 1;
+            printf("bit #%d   of val was updated\n", (j-56));
+            // TODO :: Index from END of current block, write most significant digit First.
+            // TODO :: put in leading 0s to ensure 8 bit chars 
+                // (easy once have index from end,) if (j % 8 != 0)  doTheStff
+            
+
         }
     }
 
@@ -178,19 +184,63 @@ void decode(Bitmap bmp, char* keyFile, char* cipherFile) { // given encoded bmp 
 
     // read each least significant bit of 
     unsigned char val;
-    unsigned long i = 0;
+    unsigned int i = 0;
     unsigned int j = 56;
     for (i = 0; i < len; i++) {
-        val = 255;                 // set val to uchar 255 ->  1111 1111    bin rep.
-        // while (val) {
-        //     while (bmp.str[j]) {
+        val = 255;                  // set val to uchar 255 ->  1111 1111    bin rep.
+        int k = 0;
+        printf("\nval is : %d\n\n", val);
+        while (val && k < 8) {               // while (val && k < 8 )
+            while (bmp.str[j]) {
+                if (bmp.str[j] & 1)
+                    { val |=   1; break; } // val = val | 1   1000 0000 | 0000 0001 == 0000 0001
+                else {
+                    { val &= 254; break; } // val = val & 254 1000 0001 & 1111 1110 == 1000 0000
+                }
+            }
+            printf("bit #%d   of val was updated\n", k);
+            printf("val is : %d\n", val);   // put a 0 in the ones digit
 
-        //     }
-        // }
+            j++;
+            k++;
+            if (k == 8) break;
+            
+            val <<= 1;
+            printf("val was left shifted\n");
+            printf("val is : %d\n", val);   // shifted it to the left
+            printf("\n");
+        }
     }
+
+    // I'm getting BIN val == (0000) 1111
+    // SHOULD BE   BIN val == (0011) 0000
+
+    // 2 things then :: 
+    // FIRST, fix Write logic so it places our binary in MOST significant digit FIRST.
+    // That way, will read in:
+    // 0
+    // 0
+    // 1
+    // 1
+    // 0
+    // 0
+    // 0
+    // 0    in that order
+
+    // THEN, I can deal with whether or not we are doing bitwise negation when trying to write  (1 -> 0   &&  0 -> 1)
+
+
+
+    // // DEBUG :: check contents of bmp.str, indices 56 -> 63
+    // int index = 56;
+    // while (index < 64) {
+    //     printf("char at bmp.str[%d] is decimal-value %d\n", index, bmp.str[index]);
+    //     index++;
+    // }
 
     free(cipherTxt);
     free(bmp.str);
+    exit(-1);
 }
 
 // Fourth Step : Decrypt
