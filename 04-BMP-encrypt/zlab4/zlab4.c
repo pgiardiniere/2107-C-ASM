@@ -141,7 +141,7 @@ void encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
     
 
 
-    int i;    
+    int i;
     for (i = 57; i < filesize; i++) {
 
     }
