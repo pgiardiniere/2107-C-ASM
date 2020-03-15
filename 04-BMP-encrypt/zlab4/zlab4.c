@@ -25,6 +25,21 @@ void encode (char* initialBmp, char* encodedBmp, char* cipherFile);
 void decode (char* encodedBmp, char* decodedBmp);
 void printMenu();
 
+void stringReverse(char * str) {
+    char temp[sizeof(str)];
+    int i = 0;
+    int j = 0;
+    while (str[i]) { i++; } i--;    // walk index to end of data
+
+    while (i > -1) {                // reverse in a temp array
+        temp[j] = str[i];
+        j++;
+        i--;
+    }
+    temp[j] = '\0';
+    strcpy(str, temp);              // overwrite original, reverse complete
+}
+
 // ##############################
 // File IO block
 // ##############################
@@ -103,21 +118,35 @@ void encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
     // feed into BitMap struct
     Bitmap bmp = { filesize, imageWidth, imageHeight, str };
 
-    // verify Bitmap struct behaves as expected
-    printf("%lu\n", bmp.filesize);
-    printf("%d\n", bmp.imageWidth);
-    printf("%d\n", bmp.imageHeight);
-    int i;
-    for (i = 0; i < 100; i++) {
-        printf("%d ", bmp.str[i]);
-        if ( (i+1) % 10 == 0) printf("\n");
-    }
+    // // verify Bitmap struct behaves as expected
+    // printf("%lu\n", bmp.filesize);
+    // printf("%d\n", bmp.imageWidth);
+    // printf("%d\n", bmp.imageHeight);
+    // int i;
+    // for (i = 0; i < 100; i++) {
+    //     printf("%d ", bmp.str[i]);
+    //     if ( (i+1) % 10 == 0) printf("\n");
+    // }
 
     // first :: manually insert the char '0' --> 48 --> 0011 0000    into our encoded bmp
-    // do this by ::
-    // create cipher.txt --> insert a single char 0 into it.
+    // created cipher.txt --> inserted a '0' into it.
+    unsigned long garbage;
+    char* cipherText = read_file(cipherFile, &garbage);
+    unsigned char* cipherTxt;
+
+    printf("cipherText has string %s\n", cipherText);
+    printf("cipherText has char   %c\n", cipherText[0]);
+    printf("cipherText has decim  %d\n", cipherText[0]);
+    printf("cipherText has sizeOf %lu\n", sizeof(cipherText));
     
 
+
+    int i;    
+    for (i = 57; i < filesize; i++) {
+
+    }
+
+    free(cipherText);
     free(str);
     exit(-1);
 }
