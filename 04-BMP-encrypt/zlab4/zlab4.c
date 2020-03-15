@@ -12,46 +12,42 @@ typedef struct Bitmap {         // custom datatype struct for Bitmaps
     unsigned long filesize;
     unsigned int imageWidth;
     unsigned int imageHeight;
-    char * str;
+    unsigned char * str;
 } Bitmap;
 
 // Prototypes
 char* read_file(char* filename, unsigned long * filesize);
-int  write_file(char* filename, unsigned long   filesize, char* text);
-Bitmap       read_bmp (char *filename);
-unsigned int write_bmp(char *filename, Bitmap m);
-void printMenu();
-                    
+int  write_file(char* filename, unsigned long   filesize, unsigned char* text);
 void make_rand_key(char* key, int length);
 void encrypt(char* clearFile, char* keyFile, char* cipherFile);
 void decrypt(char* keyFile, char* cipherFile, char* decryptedFile);
-
-void encode ();
-void decode ();
+void encode (char* initialBmp, char* encodedBmp, char* cipherFile);
+void decode (char* encodedBmp, char* decodedBmp);
+void printMenu();
 
 // ##############################
 // File IO block
 // ##############################
 char* read_file(char* filename, unsigned long * filesize) {
-    FILE * file = fopen(filename, "rb");                            // Open file.
-    if (file == NULL) { perror("Error "); exit(1); }                // If failure, print error and quit program
-    fseek(file,  0, SEEK_END);                                  // get size (bytes), assign to filesize, rewind strm
+    FILE * file = fopen(filename, "rb");
+    if (file == NULL) { perror("Error "); exit(1); }
+    fseek(file,  0, SEEK_END);
     *filesize = (unsigned long) ftell(file);
     rewind(file);
     
-    char* contents = (char*) malloc(*filesize * sizeof(char));  // allocate space in bytes. If failure, return text
-    if (contents == NULL) { perror("Error "); exit(1); }        // If failure, print error and quit program
-    fread(contents, 1, *filesize, file);                        // save string,  close file, return pointer
+    unsigned char* contents = (unsigned char*) malloc(*filesize * sizeof(char));
+    if (contents == NULL) { perror("Error "); exit(1); }
+    int read = fread(contents, 1, *filesize, file);
+    if (read < *filesize) { printf("Could not read all characters into contents\n"); exit(1); }
     fclose(file);
     return contents;
 }
 
-int write_file(char* filename, unsigned long filesize, char* text) {
+int write_file(char* filename, unsigned long filesize, unsigned char* text) {
     FILE * file = fopen(filename, "wb");
     if (file == NULL) { perror("Error "); exit(1); }
 
-    int written = 0;
-    written = fwrite(text, 1, filesize, file);
+    int written = fwrite(text, 1, filesize, file);
     if (written < filesize) { printf("Could not write all characters\n"); exit(1); }
     fclose(file);
     return written;
@@ -62,7 +58,7 @@ void make_rand_key(char* key, int length) {     // makes random key in-place (th
     int i = 0;
     srand(time(NULL));
     while (i < length) {
-        key[i] = (char) (rand()%255 + 1);       // + 1 so range of vals is 1-255 --- i.e. NO 0 i.e. '\0'
+        key[i] = (unsigned char) (rand()%255 + 1);       // + 1 so range of vals is 1-255 --- i.e. NO 0 i.e. '\0'
         i++;
     }
 }
@@ -76,15 +72,15 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
     printf("Encrypting!\n");
     // Get clearText and filesize
     unsigned long filesize = 0;
-    char* clearText = read_file(clearFile, &filesize);
+    unsigned char* clearText = read_file(clearFile, &filesize);
     // Make keyText (appropriately sized by filesize), and write to key.txt 
-    char* keyText = (char*) malloc(filesize);
+    unsigned char* keyText = (unsigned char*) malloc(filesize);
     if (keyText == NULL) { perror("Error "); exit(1); }
     int length = filesize / sizeof(char);
     make_rand_key(keyText, length);
     write_file(keyFile, filesize, keyText);
     // Make cipherText via OTP (appropriately sized by filesize), and write to cipher.txt
-    char* cipherText = (char*) malloc(filesize);
+    unsigned char* cipherText = (unsigned char*) malloc(filesize);
     if (cipherText == NULL) { perror("Error "); exit(1); }
     int i = 0;
     for (i = 0; i < length; i++) { cipherText[i] = clearText[i] ^ keyText[i]; }
@@ -97,8 +93,40 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
 }
 
 // Second Step : Encode
+void encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
+    printf("Encoding!\n");
+    // Get contents and filesize
+    unsigned long filesize = 0;
+    unsigned int imageWidth = 1000;
+    unsigned int imageHeight = 500;
+    unsigned char * str = read_file(initialBmp, &filesize);
+    // feed into BitMap struct
+    Bitmap bmp = { filesize, imageWidth, imageHeight, str };
+
+    // verify Bitmap struct behaves as expected
+    printf("%lu\n", bmp.filesize);
+    printf("%d\n", bmp.imageWidth);
+    printf("%d\n", bmp.imageHeight);
+    int i;
+    for (i = 0; i < 100; i++) {
+        printf("%d ", bmp.str[i]);
+        if ( (i+1) % 10 == 0) printf("\n");
+    }
+
+    // first :: manually insert the char '0' --> 48 --> 0011 0000    into our encoded bmp
+    // do this by ::
+    // create cipher.txt --> insert a single char 0 into it.
+    
+
+    free(str);
+    exit(-1);
+}
+
 
 // Third  Step : Decode
+void decode(char* encodedBmp, char* decodedBmp) {
+
+}
 
 // Fourth Step : Decrypt
 void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
@@ -128,7 +156,7 @@ int main() {
     char cipherFile[] = "cipher.txt";
     char keyFile[] = "key.txt";
     char decryptedFile[] = "decrypted.txt";
-    char initBmp[] = "sample.bmp";
+    char initialBmp[] = "sample.bmp";
     char encodedBmp[] = "encoded.bmp";
     char decodedBmp[] = "decoded.bmp";
 
@@ -149,8 +177,8 @@ int main() {
         if (coerced < 1 || coerced > 5) { printf("That didn't work. Try a valid menu option. They are:\n"); }
         if (coerced == 1) { encrypt(clearFile, keyFile, cipherFile); }
         if (coerced == 2) { decrypt(keyFile, cipherFile, decryptedFile); }
-        if (coerced == 3) printf("todo : encode\n"); // { encode (clearBmp); }
-        if (coerced == 4) printf("todo : decode\n"); // { decode (); }
+        if (coerced == 3) { encode (initialBmp, encodedBmp, cipherFile); }
+        if (coerced == 4) { decode (encodedBmp, decodedBmp); }
         if (coerced == 5) { 
             // free all memory before exit
             // free(bmp.str);
