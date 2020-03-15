@@ -3,10 +3,10 @@
 #include <string.h>
 #include <time.h>
 // bitmap constants
-#define SIZE_BEGIN 1500056      // 1,500,000 = 1000 x 500 x 3 (bytes / pixel. 24 bit-depth) + 56 (header)
-#define HEADER_SIZE 56          // actually, disregard header. we aren't reading/writing at all. SIZE_BEGIN.
-#define WIDTH_BEGIN 1000
-#define HEIGHT_BEGIN 500
+#define HEADER_SIZE 56
+#define SIZE_BEGIN 2
+#define WIDTH_BEGIN 18
+#define HEIGHT_BEGIN 22
 
 typedef struct Bitmap {         // custom datatype struct for Bitmaps
     unsigned long filesize;
@@ -110,30 +110,37 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
 // Second Step : Encode
 void encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
     printf("Encoding!\n");
-    // Get contents and filesize
-    unsigned long filesize = 0;
-    unsigned int imageWidth = 1000;
-    unsigned int imageHeight = 500;
-    unsigned char * str = read_file(initialBmp, &filesize);
+    // Get contents from entire file. Get filesize, width, height, from HEADER
+    unsigned int filesize;
+    unsigned int imageWidth;
+    unsigned int imageHeight;
+    unsigned char * str;
+
+    // Open bmp for reading binary
+    FILE* file = fopen(initialBmp, "rb");
+    if (file == NULL) { perror("Error "); exit(1); }
+    // Get filesize from Header
+    fseek(file, SIZE_BEGIN, 0);
+    fread(&filesize, sizeof(int), 1, file);
+    rewind(file);
+    // Get imageWidth from Header
+    fseek(file, WIDTH_BEGIN, 0);
+    fread(&imageWidth, sizeof(int), 1, file);
+    rewind(file);
+    // Get imageHeight from Header
+    fseek(file, HEIGHT_BEGIN, 0);
+    fread(&imageHeight, sizeof(int), 1, file);
+    // Get file contents in buffer (str)
+    unsigned long garbage;
+    str = read_file(initialBmp, &garbage);
+
     // feed into BitMap struct
     Bitmap bmp = { filesize, imageWidth, imageHeight, str };
 
-    // // verify Bitmap struct behaves as expected
-    // printf("%lu\n", bmp.filesize);
-    // printf("%d\n", bmp.imageWidth);
-    // printf("%d\n", bmp.imageHeight);
-    // int i;
-    // for (i = 0; i < 100; i++) {
-    //     printf("%d ", bmp.str[i]);
-    //     if ( (i+1) % 10 == 0) printf("\n");
-    // }
-
     // first :: manually insert the char '0' --> 48 --> 0011 0000    into our encoded bmp
     // created cipher.txt --> inserted a '0' into it.
-    unsigned long garbage;
     char* cipherText = read_file(cipherFile, &garbage);
     unsigned char* cipherTxt;
-
     printf("cipherText has string %s\n", cipherText);
     printf("cipherText has char   %c\n", cipherText[0]);
     printf("cipherText has decim  %d\n", cipherText[0]);
@@ -141,10 +148,6 @@ void encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
     
 
     // TODO :: Drop in leastBit.c block.
-    int i;
-    for (i = 57; i < filesize; i++) {
-
-    }
 
     free(cipherText);
     free(str);
