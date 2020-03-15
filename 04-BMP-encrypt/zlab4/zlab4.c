@@ -21,8 +21,8 @@ int  write_file(char* filename, unsigned long   filesize, unsigned char* text);
 void make_rand_key(char* key, int length);
 void encrypt(char* clearFile, char* keyFile, char* cipherFile);
 void decrypt(char* keyFile, char* cipherFile, char* decryptedFile);
-void encode (char* initialBmp, char* encodedBmp, char* cipherFile);
-void decode (char* encodedBmp, char* decodedBmp);
+Bitmap encode (char* initialBmp, char* encodedBmp, char* cipherFile);
+void decode (Bitmap bmp, char* keyFile, char* cipherFile);
 void printMenu();
 
 void stringReverse(char * str) {
@@ -108,7 +108,7 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
 }
 
 // Second Step : Encode
-void encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
+Bitmap encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
     printf("Encoding!\n");
     // Get contents from entire file. Get filesize, width, height, from HEADER
     unsigned int filesize;
@@ -150,26 +150,47 @@ void encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
         while (val) {
             while (str[j]) {
                 if (val & 1)
-                    { str[j] |= 1; break; }                 // write '1' to least bit in str[j] (0000 0001)
+                    { bmp.str[j] |= 1; break; }                 // write '1' to least bit in str[j] (0000 0001)
                 else
-                    { str[j] &= 254; break; }               // write '0' to least bit in str[j] (1111 1110)
+                    { bmp.str[j] &= 254; break; }               // write '0' to least bit in str[j] (1111 1110)
             }            
             j++;
             val >>= 1;
         }
     }
 
-    printf("bits overwritten. Saving results to a file ::\n");
-
+    printf("bits overwritten. Saving results to \"encoded.bmp\" and returning Bitmap bmp to main ::\n");
+    write_file(encodedBmp, bmp.filesize, bmp.str);
     free(cipherText);
-    free(str);
-    exit(-1);
+    return bmp;
 }
 
 
 // Third  Step : Decode
-void decode(char* encodedBmp, char* decodedBmp) {
+void decode(Bitmap bmp, char* keyFile, char* cipherFile) { // given encoded bmp and length of keyFile, create cipherFile.
+    printf("Decoding!\n");
+    // get length of cipherText. OTP works on strings of same size. Thus, encoded cipher must be same length as the recipient's keyFile
+    unsigned long len = 0;
+    read_file(keyFile, &len);
 
+    char* cipherTxt = (char*) malloc(len);
+    if (cipherTxt == NULL) { perror("Error :"); exit(1); }
+
+    // read each least significant bit of 
+    unsigned char val;
+    unsigned long i = 0;
+    unsigned int j = 56;
+    for (i = 0; i < len; i++) {
+        val = 255;                 // set val to uchar 255 ->  1111 1111    bin rep.
+        // while (val) {
+        //     while (bmp.str[j]) {
+
+        //     }
+        // }
+    }
+
+    free(cipherTxt);
+    free(bmp.str);
 }
 
 // Fourth Step : Decrypt
@@ -203,11 +224,7 @@ int main() {
     char initialBmp[] = "sample.bmp";
     char encodedBmp[] = "encoded.bmp";
     char decodedBmp[] = "decoded.bmp";
-
-    // Bitmap bmp = construct();
-    // printf("Bitmap 'bmp' data field 'filesize' is: %lu\n", bmp.filesize);
-    // printf("Bitmap 'bmp' data field 'str' is: %s\n", bmp.str);
-    // free(bmp.str);
+    Bitmap bmp;
 
     // User input loop :: choose between 5 menu options.
     int coerced = 1;
@@ -215,14 +232,14 @@ int main() {
     while (1) {
         printMenu();
         fgets(in, 256, stdin);
-        in[strcspn(in, "\n")] = 0;          // fgets reads in newline char, replace it w/ null (ascii 0)
+        in[strcspn(in, "\n")] = 0;          // fgets reads in newline char, replace it w/ null (ascii 0) 
         coerced = atoi(in);
         // perform menu option selected or re-prompt for input.
         if (coerced < 1 || coerced > 5) { printf("That didn't work. Try a valid menu option. They are:\n"); }
         if (coerced == 1) { encrypt(clearFile, keyFile, cipherFile); }
         if (coerced == 2) { decrypt(keyFile, cipherFile, decryptedFile); }
-        if (coerced == 3) { encode (initialBmp, encodedBmp, cipherFile); }
-        if (coerced == 4) { decode (encodedBmp, decodedBmp); }
+        if (coerced == 3) { bmp = encode(initialBmp, encodedBmp, cipherFile); }
+        if (coerced == 4) {       decode(bmp, keyFile, cipherFile); }
         if (coerced == 5) { 
             // free all memory before exit
             // free(bmp.str);

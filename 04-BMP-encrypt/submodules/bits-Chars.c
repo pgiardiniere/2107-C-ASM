@@ -18,13 +18,12 @@ void stringReverse(char * str) {
 }
 
 int main() {
+    // get binary of n. Begins @ least significant (i.e. rightmost) digit.
     char binRep[8];
     unsigned char c = '0';          // '0' ---> (dec) 48 --> (bin) 0011 0000
     int i = 0;
-
     printf("base-10 '0' is : %d\n", c);
-    
-    while (c) {                     // get binary of n. Begins @ least significant (i.e. rightmost) digit.
+    while (c) {
         if (c & 1)
             binRep[i] = '1';
         else
@@ -34,19 +33,10 @@ int main() {
     }
     binRep[i] = '\0';
     stringReverse(binRep);
+    printf("base-2  '0' is : %s\n", binRep);    
+
+    // convert binRep to Char
     
-    printf("base-2  '0' is : %s\n", binRep);
-    
-    // // testing calloc().
-    // char str[10];
-    // str[9] = '\0';
-    // i = 0;
-    // while (i < 10) {
-    //     printf("%c ", str[i] + 48);
-    //     i++;
-    // }
-    // printf("\n");
-    // // calloc() works as expected
-    
+
     return 0;
 }
