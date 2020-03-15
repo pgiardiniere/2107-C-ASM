@@ -35,7 +35,7 @@ void decode ();
 char* read_file(char* filename, unsigned long * filesize) {
     FILE * file = fopen(filename, "rb");                            // Open file.
     if (file == NULL) { perror("Error "); exit(1); }                // If failure, print error and quit program
-    fseek(file,  0, SEEK_END);                                // get size (bytes), assign to filesize, rewind strm
+    fseek(file,  0, SEEK_END);                                  // get size (bytes), assign to filesize, rewind strm
     *filesize = (unsigned long) ftell(file);
     rewind(file);
     
@@ -50,15 +50,11 @@ int write_file(char* filename, unsigned long filesize, char* text) {
     FILE * file = fopen(filename, "wb");
     if (file == NULL) { perror("Error "); exit(1); }
 
-    // manually check if filenames appropraite for lab3 files. do lab3 writes
-    if (strcmp(filename, "key.txt") == 0 || strcmp(filename, "cipher.txt") == 0 || strcmp(filename, "decrypted.txt") == 0) {
-        int written = 0;
-        written = fwrite(text, 1, filesize, file);
-        if (written < filesize) { printf("Could not write all characters\n"); exit(1); }
-        fclose(file);
-        return written;
-    }
-    // else :: do lab4 stuff
+    int written = 0;
+    written = fwrite(text, 1, filesize, file);
+    if (written < filesize) { printf("Could not write all characters\n"); exit(1); }
+    fclose(file);
+    return written;
 }
 
 void make_rand_key(char* key, int length) {     // makes random key in-place (through pointer), and writes it to a file.
