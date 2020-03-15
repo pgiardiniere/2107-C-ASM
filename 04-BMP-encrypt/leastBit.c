@@ -105,9 +105,9 @@ int main() {
         while (val) {                                               // technically, we don't need val either. could do while (vals[i])
             while (str[j]) {
                 if (val & 1)
-                    { str[j] |= 1; break; }
+                    { str[j] |= 1; break; }                         // write '1' to least bit in str[j] (0000 0001)
                 else
-                    { str[j] &= 254; break; }
+                    { str[j] &= 254; break; }                       // write '0' to least bit in str[j] (1111 1110)
             }
             j++;
             val >>= 1;

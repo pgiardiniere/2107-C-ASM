@@ -130,24 +130,36 @@ void encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
     // Get imageHeight from Header
     fseek(file, HEIGHT_BEGIN, 0);
     fread(&imageHeight, sizeof(int), 1, file);
+    fclose(file);
     // Get file contents in buffer (str)
     unsigned long garbage;
     str = read_file(initialBmp, &garbage);
-
     // feed into BitMap struct
     Bitmap bmp = { filesize, imageWidth, imageHeight, str };
 
     // first :: manually insert the char '0' --> 48 --> 0011 0000    into our encoded bmp
-    // created cipher.txt --> inserted a '0' into it.
-    char* cipherText = read_file(cipherFile, &garbage);
-    unsigned char* cipherTxt;
-    printf("cipherText has string %s\n", cipherText);
-    printf("cipherText has char   %c\n", cipherText[0]);
-    printf("cipherText has decim  %d\n", cipherText[0]);
-    printf("cipherText has sizeOf %lu\n", sizeof(cipherText));
-    
+    unsigned long  cipherSize;
+    unsigned char* cipherText = read_file(cipherFile, &cipherSize);
 
-    // TODO :: Drop in leastBit.c block.
+    // write each bit of cipher char 'val' onto the Least Significant bit of 8 chars in bmp.str (w/ begin index after header data)
+    unsigned char val;
+    int i = 0;
+    int j = 56;
+    for (i = 0; i < cipherSize; i++) {
+        val = cipherText[i];
+        while (val) {
+            while (str[j]) {
+                if (val & 1)
+                    { str[j] |= 1; break; }                 // write '1' to least bit in str[j] (0000 0001)
+                else
+                    { str[j] &= 254; break; }               // write '0' to least bit in str[j] (1111 1110)
+            }            
+            j++;
+            val >>= 1;
+        }
+    }
+
+    printf("bits overwritten. Saving results to a file ::\n");
 
     free(cipherText);
     free(str);
