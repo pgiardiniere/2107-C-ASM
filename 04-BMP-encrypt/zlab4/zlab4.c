@@ -140,7 +140,7 @@ void encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
     printf("cipherText has sizeOf %lu\n", sizeof(cipherText));
     
 
-
+    // TODO :: Drop in leastBit.c block.
     int i;
     for (i = 57; i < filesize; i++) {
 
