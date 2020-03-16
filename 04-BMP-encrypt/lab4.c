@@ -105,6 +105,9 @@ void encrypt(char* clearFile, char* keyFile, char* cipherFile) {
     free(clearText);
     free(keyText);
     free(cipherText);
+    printf("Encrypt complete.\n");
+    printf("--Read from : %s and %s\n", keyFile, clearFile);
+    printf("--Wrote to  : %s and %s\n", keyFile, cipherFile);
 }
 
 // Second Step : Encode
@@ -168,9 +171,11 @@ Bitmap encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
         j += 9;                         // advance j to next byte-block
     }
 
-    printf("bits overwritten. Saving results to \"encoded.bmp\" and returning Bitmap bmp to main ::\n");
     write_file(encodedBmp, bmp.filesize, bmp.str);
     free(cipherText);
+    printf("Encode complete.\n");
+    printf("--Read from : %s and %s\n", initialBmp, cipherFile);
+    printf("--Wrote to  : %s\n", encodedBmp);
     return bmp;
 }
 
@@ -210,6 +215,9 @@ void decode(Bitmap bmp, char* keyFile, char* cipherFile) { // given encoded bmp 
     cipherTxt[i] = '\0';                                // cipherTxt now contains all hidden chars, and is null-terminated. write to file.
     write_file("decoded-cipher.txt", len, cipherTxt);   // Do string literal "cipher.txt" if you want decrypt() to use it.
 
+    printf("Decode complete.\n");
+    printf("--Read from : bmp.str (passed in), %s and %s\n", keyFile, cipherFile);
+    printf("--Wrote to  : %s\n", "decoded-cipher.txt");
     free(cipherTxt);
     free(bmp.str);
 }
@@ -233,6 +241,9 @@ void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
     free(decryptedText);
     free(keyText);
     free(cipherText);
+    printf("Decrypt complete.\n");
+    printf("--Read from : %s and %s\n", keyFile, cipherFile);
+    printf("--Wrote to  : %s\n", decryptedFile);
 }
 
 int main() {
