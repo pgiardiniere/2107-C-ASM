@@ -163,7 +163,7 @@ Bitmap encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
             while (bmp.str[j]) {
                 bmp.str[j] &= 254;
                 break;
-            }            
+            }
             j--;
         }
         j += 9;                         // advance j to next byte-block
