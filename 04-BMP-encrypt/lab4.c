@@ -140,11 +140,9 @@ Bitmap encode(char* initialBmp, char* encodedBmp, char* cipherFile) {
     // feed into BitMap struct
     Bitmap bmp = { filesize, imageWidth, imageHeight, str };
 
-    // first :: manually insert the char '0' --> 48 --> 0011 0000    into our encoded bmp
+    // write each bit of cipher char 'val' onto the Least Significant bit of 8 chars in bmp.str (w/ begin index after header data)
     unsigned long  cipherSize;
     unsigned char* cipherText = read_file(cipherFile, &cipherSize);
-
-    // write each bit of cipher char 'val' onto the Least Significant bit of 8 chars in bmp.str (w/ begin index after header data)
     unsigned char val;
     int i = 0;
     int j = 56;
