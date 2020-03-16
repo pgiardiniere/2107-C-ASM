@@ -22,100 +22,30 @@
     required operation.  I added some hints above functions.
 
 */
-
 #include <stdio.h>
 
+// Review :: Operator types allowed :: (obviously, assignment.)
+//      Relational      ==  !=  <  <=  >  >=
+//      Logical         &&  ||  !
+//      Bitwise         &   |   ^
+
+
 // Prototypes
-int _add(int a, int b);
-int add(int a, int b);
+int _add(int a, int b);     // Bitwise
+int add(int a, int b);      // Bitwise || Logical || Relational
 int sub(int a, int b);
-int neg(int a);
+int neg(int a);             // also, any function may use another which you have defined to get its output. (mult as repeated add, for ex)
 int mul(int a, int b);
 int div(int a, int b);
 int mod(int a, int b);
-int pow(int a, int b);
+int power(int a, int b);
 int convert(char *input);
 
-// Main
-int main(int argc, char *argv[]){
-
-    int res = 0;        // Cumulative result - running total
-    int n = 0;          // For number conversion from input string
-    char input[50];     // Input string
-    input[0] = '\0';    // Put null in operator char so loop works
-
-    // Write code here to test your functions
-    // Uncomment code below when done
-
-    // Loop until quit is selected
-/*    while(input[0] != 'q' && input[0] != 'Q'){
-        // Show menu choices
-        menu();
-        // Print prompt with running total
-        printf("\nres = %d > ", res);
-        // Get input string
-        gets(input);
-        // Clear screen
-        system("cls");
-
-        // Switch on operator char input[0]
-        switch (input[0]){
-            case '+':
-                res = add(res, convert(input));
-                break;
-            case '-':
-                res = sub(res, convert(input));
-                break;
-            case '*':
-                res = mul(res, convert(input));
-                break;
-            case '/':
-                res = div(res, convert(input));
-                break;
-            case '%':
-                res = mod(res, convert(input));
-                break;
-            case '~':
-                res = neg(res);
-                break;
-            case '^':
-                res = pow(res, convert(input));
-                break;
-            case 'c':
-            case 'C':
-                res = 0;
-                break;
-            case 'q':
-            case 'Q':
-                printf("Good-bye!\n");
-                break;
-            default:
-                printf("Enter a valid operator and operand\n");
-
-        }
-
-    }
-*/
-
-    return 0;
-}
-
-
-// Show menu choices
-void menu(){
-    printf("\nSafe Integer Calculator\n");
-    printf("+ x to add\n");
-    printf("- x to subtract\n");
-    printf("* x to multiply\n");
-    printf("/ x to divide\n");
-    printf("%% x to modulus\n");
-    printf("~ x to negate\n");
-    printf("^ x to raise by power x\n");
-    printf("c x to clear result\n");
-    printf("q x to quit\n");
-    return;
-}
-
+// Prototypes (suppress all implicit declaration warnings)
+char * gets (char * str);
+int system (const char* command);
+char * strtok (char * str, const char * delimiters);      // strtok() used once for newline character elimination.
+void exit (int status);                                     // exit() used for faster testing.
 
 /*
     This function should only use bitwise operators and
@@ -142,14 +72,14 @@ int _add(int a, int b){
 // Safe add operation
 int add(int a, int b){
     // Declare int for result
-    int res = 0;
+    int result = 0;
     // Call to _add() a and b and assign to result
 
     // Check for overflow - look at page 90 in book
 
     // Check for underflow - look at page 90 in book
 
-    return res;
+    return result;
 }
 
 
@@ -184,7 +114,7 @@ int sub(int a, int b){
 // Define safe multiply by calling safe add b times
 int mul(int a, int b){
     // Declare and initialize cumulative result
-    int res = 0;
+    int result = 0;
     // Declare sign of product - initially assume positive
 
     // For efficiency - smaller number should be multiplier
@@ -197,7 +127,7 @@ int mul(int a, int b){
 
     // Set sign to output
 
-    return res;
+    return result;
 }
 
 
@@ -239,36 +169,36 @@ int mod(int a, int b){
 
 
 /*
-    Safe pow() calculates as the math pow function but
+    Safe power() calculates as the math power function but
     only uses the safe operations.
-        res = n^exp
+        result = n^exp
     Loop until exp is zero
-        res = res * n
+        result = result * n
         exp = exp - 1
     Remember the special case for n^0
 
 */
-// Define safe pow by calling safe multiply exp times
-int pow(int n, int exp){
+// Define safe power by calling safe multiply exp times
+int power(int n, int exp){
     // Declare int for result of n^exp
-    int res = 0;
+    int result = 0;
     // Loop and multiply to calculate n^exp
 
-    return res;
+    return result;
 }
 
 
 /*
     This function extracts the integer value from the input string.
-        If input = "+ -123", res = -123.
-        If input = "* 987654", res = 987654.
+        If input = "+ -123", result = -123.
+        If input = "* 987654", result = 987654.
     The best way to solve complicated problems is to work them out
     on paper first.
 */
 // Extract the integer from the input string and convert to int
 int convert(char *input){
     // Declare int for result extracted from input
-    int res = 0;
+    int result = 0;
     // Declare int for sign of result
 
     // Declare two iterators
@@ -288,11 +218,86 @@ int convert(char *input){
 
     // i gets position of last numeric char in buffer
 
-    // j is now used for pow function - start at zero
+    // j is now used for power function - start at zero
 
-    // Construct integer from buffer using pow j increases and i decreases
+    // Construct integer from buffer using power j increases and i decreases
 
     // Set sign for output
-    return res;
+    return result;
 }
 
+void menu(){
+    printf("\nSafe Integer Calculator\n");
+    printf("+ x to add\n");
+    printf("- x to subtract\n");
+    printf("* x to multiply\n");
+    printf("/ x to divide\n");
+    printf("%% x to modulus\n");
+    printf("~ x to negate\n");
+    printf("^ x to raise by power x\n");
+    printf("c x to clear result\n");
+    printf("q x to quit\n");
+    return;
+}
+
+int main(int argc, char *argv[]) {
+
+    int result = 0;     // Cumulative result - running total
+    int n = 0;          // For number conversion from input string
+    char input[50];     // Input string
+    input[0] = '\0';    // Put null in operator char so loop works
+
+    // Write code here to test your functions
+    // Uncomment code below when done
+
+
+    // Loop until quit is selected
+    while(input[0] != 'q' && input[0] != 'Q'){
+        // Show menu choices
+        menu();
+        // Print prompt with running total
+        printf("\nresult = %d > ", result);
+        // Get input string
+        fgets(input, 49, stdin);              // replaced gets() with fgets() & strtok() to get input WITHOUT comiler warnings
+        strtok(input, "\n");
+        // Clear screen
+        system("clear");
+
+        // Switch on operator char input[0]
+        switch (input[0]){
+            case '+':
+                result = add(result, convert(input));
+                break;
+            case '-':
+                result = sub(result, convert(input));
+                break;
+            case '*':
+                result = mul(result, convert(input));
+                break;
+            case '/':
+                result = div(result, convert(input));
+                break;
+            case '%':
+                result = mod(result, convert(input));
+                break;
+            case '~':
+                result = neg(result);
+                break;
+            case '^':
+                result = power(result, convert(input));
+                break;
+            case 'c':
+            case 'C':
+                result = 0;
+                break;
+            case 'q':
+            case 'Q':
+                printf("Goodbye!\n");
+                break;
+            default:
+                printf("Enter a valid operator and operand\n");
+
+        }
+    }
+    return 0;
+}
