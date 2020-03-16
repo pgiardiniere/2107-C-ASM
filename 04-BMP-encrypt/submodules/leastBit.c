@@ -76,17 +76,6 @@ int main() {
     }                           //          0000 1001
     printf("\n");               // expected      1000    CORRECT
 
-
-    // int j;
-    // unsigned char temp;
-    // manip = 9;     // decimal 9 --> binary 0000 1001
-    // for (i = 0; i < strlen(string); i++) {
-    //     temp = string[i];                   // get current char     (byte)
-    //     for (j = 0; j < 8; j ++) {          // get least significant bit    (OH. OHOHOH. WE BEGIN ACCESS AT LEAST SIGNIFICANT BIT)
-    //         if (temp & )
-    //     }
-    // }
-
     // ####################################################################################
     // Second thought. Let's just overwrite the least-significant bit in a char 
     unsigned char str[8]; for (i=0; i<8; i++) { str[i] = 254; }
@@ -116,44 +105,20 @@ int main() {
     for (i=0; i<8; i++) { printf("str[i] decimal is:  %d\n", str[i]); }
     printf("\n");
 
-
-    // ####################################################################################
-    // Trial :: left-shifting bits
-    unsigned int k;
-    i = 0;
-    j = 0;
-    k = 0;
-    val = 1;                    // 0000 0001 . Left shifting by 1 should be 0000 0010. Etc.
-    for (i = 0; i < 1; i++) {
-        while (val && k < 9) {
-            printf("leftshift of %d    Decimal val is %d\n", k, val);
-            val <<= 1;
-            k++;
-        }
-    }
-
-    // ####################################################################################
-    // Next thing : Get least significant digits and write to a char.
-    // for (i=0; i<8; i++) { printf("str[i] decimal is:  %d\n", str[i]); }
-    // printf("\n");
-
-    // // this overwrites the least-significant bit in each char in str[j]
+    // // ####################################################################################
+    // // Trial :: left-shifting bits
+    // unsigned int k;
+    // i = 0;
     // j = 0;
+    // k = 0;
+    // val = 1;                    // 0000 0001 . Left shifting by 1 should be 0000 0010. Etc.
     // for (i = 0; i < 1; i++) {
-    //     val = vals[i];
-    //     while (val) {                                               // technically, we don't need val either. could do while (vals[i])
-    //         while (str[j]) {
-    //             if (val & 1)
-    //                 { str[j] |= 1; break; }                         // write '1' to least bit in str[j] (0000 0001)
-    //             else
-    //                 { str[j] &= 254; break; }                       // write '0' to least bit in str[j] (1111 1110)
-    //         }
-    //         j++;
-    //         val >>= 1;
+    //     while (val && k < 9) {
+    //         printf("leftshift of %d    Decimal val is %d\n", k, val);
+    //         val <<= 1;
+    //         k++;
     //     }
     // }
-    // for (i=0; i<8; i++) { printf("str[i] decimal is:  %d\n", str[i]); }
-    
 
-    return 0;
+   return 0;
 }

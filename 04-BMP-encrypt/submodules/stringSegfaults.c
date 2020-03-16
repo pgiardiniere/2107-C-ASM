@@ -35,16 +35,18 @@ int main() {
     strcpy(tempStr2, tempStr);
     // https://stackoverflow.com/questions/164194/why-do-i-get-a-segmentation-fault-when-writing-to-a-string-initialized-with-cha
         // The fix TL;DR
-        // char  varName[] makes a COPY of the string literal in a writeable portion of memory. use those instead.
-
-    // SO. What have we learned?
-    // DECLARE STRINGS as
-        // char  varName[]
-    // you may work with strings LATER using
-        // char *varName
+        // char  varName[] makes a COPY of the string literal in a writeable portion of memory. use those if need mutable string literals.
 
 
-    // some other trash here:
+    // #########################
+    // Demonstration of slight difference between a general 'char-buffer' and a string:
+    // #########################
+    
+    // C defines a string as a null-terminated sequence of chars.
+    // But if your sequence (array) is larger than the null-terminated character, you can keep putting stuff after the 'end' of the string part
+    // Hence the use of the more general term 'buffer'
+    
+    // code below for example (assumes pre-filled bmp.str[])
 
     // int i;
     // for (i = 0; i < 4; i++) {
