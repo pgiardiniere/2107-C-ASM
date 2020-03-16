@@ -208,7 +208,7 @@ void decode(Bitmap bmp, char* keyFile, char* cipherFile) { // given encoded bmp 
         cipherTxt[i] = val;
     }
     cipherTxt[i] = '\0';                                    // cipherTxt now contains all hidden chars, and is null-terminated. write to file.
-    write_file("decoded-cipher.txt", len, cipherTxt);       // replace literal "decoded-cipher.txt" with "cipher.txt" if you want prog to use this one.
+    write_file("cipher.txt", len, cipherTxt);       // replace literal "decoded-cipher.txt" with "cipher.txt" if you want prog to use this one.
 
     free(cipherTxt);
     free(bmp.str);
@@ -234,7 +234,6 @@ void decrypt(char* keyFile, char* cipherFile, char* decryptedFile) {
     free(keyText);
     free(cipherText);
 }
-
 
 int main() {
     // file strings
