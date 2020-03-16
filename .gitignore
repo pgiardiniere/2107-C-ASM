@@ -1,8 +1,12 @@
 04-BMP-encrypt/cipher.txt
+04-BMP-encrypt/decoded-cipher.txt
 04-BMP-encrypt/decrypted.txt
+04-BMP-encrypt/encoded.bmp
 04-BMP-encrypt/key.txt
-04-BMP-encrypt/zlab4/cipher.txt
-04-BMP-encrypt/zlab4/decoded-cipher.txt
-04-BMP-encrypt/zlab4/decrypted.txt
-04-BMP-encrypt/zlab4/encoded.bmp
-04-BMP-encrypt/zlab4/key.txt
+04-BMP-encrypt/lab4
+
+04-BMP-encrypt/submodules/bits-Chars
+04-BMP-encrypt/submodules/bits-UInts
+04-BMP-encrypt/submodules/bmps
+04-BMP-encrypt/submodules/leastBit
+04-BMP-encrypt/submodules/stringSegfaults
