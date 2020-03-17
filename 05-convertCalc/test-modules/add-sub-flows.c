@@ -30,10 +30,6 @@ int add (int a, int b) {
 
 int sub (int a, int b) {
     int c = a - b;
-    // Redundant :: pos - pos CAN'T underflow
-    // if (a >= 0 && b >= 0 && c < a) {
-    //     printf("Overflow\n"); return(0);
-    // }
 
     if (a >= 0 && b <= 0 && c < a) {      // do  a+b, if c<a, then we overflowed
         printf("Overflow\n"); return(0);
@@ -42,11 +38,6 @@ int sub (int a, int b) {
     else if (a <= 0 && b >= 0 && c > a) { // do -a-b, if c>a, then we underflowed
         printf("Underflow\n"); return(0);
     }
-
-    // Redundant :: neg - neg CAN'T overflow
-    // else if (a <= 0 && b <= 0 && c > a) { // do -a+b, if c>a, then we underflowed
-    //     printf("Underflow\n"); return(0);
-    // }
 
     else {
         printf("Calculation is in-bounds. Result is %d\n", c);
