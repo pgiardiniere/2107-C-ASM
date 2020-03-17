@@ -15,5 +15,6 @@
 05-convertCalc/convertProb
 05-convertCalc/safeCalcProb
 
-05-convertCalc/test-modules/add-sub-flows
-05-convertCalc/test-modules/bits-add-sub
+05-convertCalc/test-modules/*
+05-convertCalc/test-modules/!*/
+05-convertCalc/test-modules/!*.*
