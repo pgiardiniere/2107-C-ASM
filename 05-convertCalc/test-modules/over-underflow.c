@@ -14,16 +14,11 @@ void overflowAdd() {    // Requires a,b such that...
     // For (a,b) >= (0,0) --> (c >= a || c >= b)
     //                    --> !(c < a || c < b)
     if (c < 0)          printf("overflow (less stringent check)\n");    // works even in case of INT_MAX ++ INT_MAX, easier to grok
-    if (c < a || c < b) printf("overflow (more stringent check)\n");
+    if (c < a || c < b) printf("overflow (more stringent check)\n\n");
 
     // Terse detection ::
     if (a >= 0 && b >= 0 && c < 0)
-        printf("overflow (less stringent check)\n");
-
-}
-
-void underflowAdd() {
-
+        printf("overflow (less stringent check)\n\n");
 
 }
 
@@ -39,23 +34,19 @@ void underflowSub() {   // Requires a,b such that...
     // For (a,b) : (a <= 0, b >=0 ) --> (c <= a || c <= b)
     //                              --> !(c > a || c > b)               // really, we could simplify to !(c > a)
     if (c > 0)          printf("underflow (less stringent check)\n");
-    if (c > a || c > b) printf("underflow (more stringent check)\n");
+    if (c > a || c > b) printf("underflow (more stringent check)\n\n");
 
 }
-
-
-
-void overflowSub() {
-
-}
-
-
-
 
 int main() {
-    // overflowAdd();   // works as expected
+    printf("overflowAdd() call\n");
+    printf("#########################\n");
+    overflowAdd();
+
+    printf("#########################\n");
+    printf("underflowSub() call\n");
+    printf("#########################\n");
     underflowSub();
     
     return 0;
 }
-
