@@ -1,3 +1,5 @@
+00-Miscellaneous/!*.*
+
 04-BMP-encrypt/cipher.txt
 04-BMP-encrypt/decoded-cipher.txt
 04-BMP-encrypt/decrypted.txt
@@ -12,3 +14,4 @@
 
 05-convertCalc/convertProb
 05-convertCalc/safeCalcProb
+05-convertCalc/test-modules/add
