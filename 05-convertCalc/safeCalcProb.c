@@ -23,11 +23,12 @@
 
 */
 #include <stdio.h>
+#include <limits.h>         // temporariliy included for easy limit comparison during testing
 
 // Review :: Operator types allowed :: (obviously, assignment.)
-//      Relational      ==  !=  <  <=  >  >=
+//      Relational      ==  !=  <  <=   >  >=
 //      Logical         &&  ||  !
-//      Bitwise         &   |   ^
+//      Bitwise         &   |   ^   ~   << >>
 
 
 // Prototypes
@@ -41,11 +42,10 @@ int mod(int a, int b);
 int power(int a, int b);
 int convert(char *input);
 
-// Prototypes (suppress all implicit declaration warnings)
-char * gets (char * str);
+// Prototypes (stops all implicit declaration warnings)
 int system (const char* command);
 char * strtok (char * str, const char * delimiters);      // strtok() used once for newline character elimination.
-void exit (int status);                                     // exit() used for faster testing.
+void exit (int status);                                   // exit() used to expedite testing.
 
 /*
     This function should only use bitwise operators and
@@ -250,6 +250,18 @@ int main(int argc, char *argv[]) {
     // Write code here to test your functions
     // Uncomment code below when done
 
+    unsigned long size = sizeof(int);
+    printf("sizeof int is %lu\n", size);
+    printf("bitsof int is %lu\n", size*8);
+    printf("bit representation :: 32 bits");
+    printf("0000 0000 0000 0000 0000 0000 0000 0000");
+    printf("hex representation :: 32 bits");
+    printf("FFFF FFFF");                                //    implies we have 0x80000000        (calculator verifies this)
+    printf("Integer Min is %d\n", INT_MIN);             // define __INT_MIN__ ( -INT_MAX - 1)   == (decimal) -2,147,483,648
+    printf("Integer Max is %d\n", INT_MAX);             // define __INT_MAX__ 0x7fffffff        == (decimal)  2,147,483,647
+                                                        // MIN binary :: 1000 0000 0000 0000 0000 0000 0000 0000
+                                                        // MAX binary :: 0111 1111 1111 1111 1111 1111 1111 1111
+    exit(-1);
 
     // Loop until quit is selected
     while(input[0] != 'q' && input[0] != 'Q'){

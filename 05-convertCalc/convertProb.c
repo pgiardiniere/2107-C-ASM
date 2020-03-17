@@ -24,7 +24,8 @@ int main() {
 
     printf("Enter a binary, octal, decimal or hexadecimal number\n");
     printf("convert > ");
-    gets(input);
+    fgets(input, 49, stdin);
+    strtok(input, "\n");
 
     // Detect input data type, make into unsigned int
     if(input[0] == '0' && input[1] == 'x')       n = hex_to_uint(input);    // Hexadecimal
