@@ -10,5 +10,5 @@
 04-BMP-encrypt/submodules/leastBit
 04-BMP-encrypt/submodules/stringSegfaults
 
-05-convertCalc/ConvertProb
-05-convertCalc/SafeCalcProb
+05-convertCalc/convertProb
+05-convertCalc/safeCalcProb
