@@ -38,41 +38,28 @@ int _add (int a, int b) {
     }
     int c = x;
 
-    // detect whether a, b are >= 0
+    // Detect Underflow
+    // Maximum possible underflow (INT_MIN + INT_MIN) yields 0. Min underflow is INT_MAX. Thus underflow -> c:Positive (0 <= c <= INT_MAX)
     int aNonPositive = a & INT_MIN;
     int bNonPositive = a & INT_MIN;
-
-    printf("Calculation in/out of bounds. Result is %d\n", c);
-    // DETECT OVERFLOW
-    int aNonNegative = a & INT_MIN;
-    int bNonNegative = b & INT_MIN;
-    // determine whether A has a higher significant digit than C. If so, then (a > c). Implies Overflow. 
     x = c;
-    y = a;
-    while (x) {
-        while (y) {
-            x >>= 1;
-            y >>= 1;
-        }
-    }
+    x = ~x;                     // bitwise negate, if X was positive (underflow), make negative
+    x = x >> 31;                // get x most significant digit
+    if (aNonPositive)
+        if (bNonPositive)
+            if (x) { printf("Underflow\n"); return(0); }    // If X had overflowed, 
+
+    // Detect Overflow
+    // Maximum possible overflow (INT_MAX + INT_MAX) yields -2. Min overflow is INT_MIN. Thus underflow -> c:Negative (INT_MIN <= c <= -2)
+    int aNonNegative; if (aNonPositive) aNonNegative = 0;   // if (a <= 0), then !(a > 0)
+    int bNonNegative; if (aNonPositive) bNonNegative = 0;
+    x = c;
+    x = x >> 31;
     if (aNonNegative)
         if (bNonNegative)
-            if (y) 
-                { printf("Overflow\n"); return(0); }
+            if (x) { printf("Overflow\n"); return(0); }
 
-    // // DETECT UNDERFLOW
-    // int aNonPositive = a & INT_MIN;
-    // int bNonPositive = a & INT_MIN;
-    // // Maximum possible underflow (INT_MIN + INT_MIN) yields result of 0. Thus if we underflow, result C is non-negative.
-    // x = c;
-    // x = ~x;                     // bitwise negate, if X was positive (underflow), make negative
-    // x = x >> 31;                // get x most significant digit
-    // x = x & 1;                  // expect :: 1 if we underflowed. 0 If operation successful.
-    // if (aNonPositive)
-    //     if (bNonPositive)
-    //         if (x) { printf("Underflow\n"); return(0); }    // If X had overflowed, 
-
-    // Return Result
+    printf("Calculation is in-bounds. Result is %d\n", c);
     return c;
 }
 
@@ -94,17 +81,24 @@ int sub (int a, int b) {
 }
 
 int main() {
-    add(2, 1);
-    add(10, 5);
-    add(INT_MAX, 1);
-    add(INT_MIN, -1);
+
+    add(10000023, 1235456);
+
+    // // Over/Underflow bounds testing
+    // add(INT_MAX, 1);
+    // add(INT_MIN, -1);
+    // add(INT_MIN, INT_MIN);
+    // add(INT_MAX, INT_MAX);
 
     printf("\n");
 
-    _add(2, 1);
-    _add(10, 5);
-    _add(INT_MAX, 1);
-    _add(INT_MIN, -1);
+    _add(10000023, 1235456);
+
+    // // Over/Underflow bounds testing
+    // _add(INT_MAX, 1);
+    // _add(INT_MIN, -1);
+    // _add(INT_MIN, INT_MIN);
+    // _add(INT_MAX, INT_MAX);
 
     return 0;
 }
