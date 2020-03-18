@@ -38,7 +38,11 @@ int _add (int a, int b) {
     }
     int c = x;
 
+    // detect whether a, b are >= 0
+    int aNonPositive = a & INT_MIN;
+    int bNonPositive = a & INT_MIN;
 
+    printf("Calculation in/out of bounds. Result is %d\n", c);
     // DETECT OVERFLOW
     int aNonNegative = a & INT_MIN;
     int bNonNegative = b & INT_MIN;
@@ -56,17 +60,17 @@ int _add (int a, int b) {
             if (y) 
                 { printf("Overflow\n"); return(0); }
 
-    // DETECT UNDERFLOW
-    int aNonPositive = a & INT_MIN;
-    int bNonPositive = a & INT_MIN;
-    // Maximum possible underflow (INT_MIN + INT_MIN) yields result of 0. Thus if we underflow, result C is non-negative.
-    x = c;
-    x = x << 31;
-    x = x & INT_MIN;          // expect :: INT_MIN if x is negative.  0 if x is pos.
-    if (aNonPositive)
-        if (bNonPositive)
-            if (x) ;                                        // if x is negative, we are okay. do nothing
-            else { printf("Underflow\n"); return(0); }       // if x is positive, we must have underflow
+    // // DETECT UNDERFLOW
+    // int aNonPositive = a & INT_MIN;
+    // int bNonPositive = a & INT_MIN;
+    // // Maximum possible underflow (INT_MIN + INT_MIN) yields result of 0. Thus if we underflow, result C is non-negative.
+    // x = c;
+    // x = ~x;                     // bitwise negate, if X was positive (underflow), make negative
+    // x = x >> 31;                // get x most significant digit
+    // x = x & 1;                  // expect :: 1 if we underflowed. 0 If operation successful.
+    // if (aNonPositive)
+    //     if (bNonPositive)
+    //         if (x) { printf("Underflow\n"); return(0); }    // If X had overflowed, 
 
     // Return Result
     return c;
@@ -93,8 +97,14 @@ int main() {
     add(2, 1);
     add(10, 5);
     add(INT_MAX, 1);
-    add(INT_MAX, 0);
-    add(INT_MIN, 1);
+    add(INT_MIN, -1);
+
+    printf("\n");
+
+    _add(2, 1);
+    _add(10, 5);
+    _add(INT_MAX, 1);
+    _add(INT_MIN, -1);
 
     return 0;
 }
