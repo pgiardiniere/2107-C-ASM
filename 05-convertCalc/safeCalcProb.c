@@ -128,13 +128,13 @@ int mul(int a, int b) {
     if (a < b) {
         while (i < a) {
             result = add(result, b);
-            i++;
+            i = add(i, 1);
         }
     }
     else {
         while (i < b) {
             result = add(result, a);
-            i++;
+            i = add(i, 1);
         }
     }
     if (negate) result = neg(result);
@@ -161,21 +161,24 @@ int div(int a, int b) {
     return count;
 }
 
-
-/*
-    Safe mod() repeatedly subtracts b from a until a < b, returning a.
-*/
-// Define safe modulus by calling safe subtract
 int mod(int a, int b){
-    // Absolute value of a
-
-    // Absolute value of b
-
-    // Find remainder by repeated subtraction a - b
-
+    // Declare int to count how many times can b be subtracted from a
+    int count = 0;
+    // Get sign of product.
+    int negate;
+    if ( a < 0 && b < 0 || a > 0 && b > 0 )
+        negate = 0;
+    else negate = 1;
+    // Force a, b positive. reassign negativity at end.
+    if (a < 0) a = neg(a);
+    if (b < 0) b = neg(b);
+    while (b < a) {
+        a = sub(a, b);
+        count = add(count, 1);
+    }
+    if (negate) count = neg(count);
     return a;
 }
-
 
 /*
     Safe power() calculates as the math power function but
@@ -187,12 +190,14 @@ int mod(int a, int b){
     Remember the special case for n^0
 
 */
-// Define safe power by calling safe multiply exp times
-int power(int n, int exp){
-    // Declare int for result of n^exp
-    int result = 0;
-    // Loop and multiply to calculate n^exp
-
+// Define power by calling multiply exp times
+int power(int n, int exp) {
+    if (exp == 0) return 1;
+    int result = 1;
+    while (exp > 0) {
+        result = mul(result, n);
+        exp = sub(exp, 1);
+    }
     return result;
 }
 
@@ -265,7 +270,10 @@ int main(int argc, char *argv[]) {
     result = mul( 2, 4 ); printf("result of 2 * 4   is  %d\n", result);
     result = mul( 2,-1 ); printf("result of 2 * -1  is  %d\n", result);
     result = div( 2,-1 ); printf("result of 2 / -1  is  %d\n", result);
-    result = div(-23,-2); printf("result of -23 / -2  is  %d\n", result);
+    result = mod( 2,-1 ); printf("result of 2 %% -1  is  %d\n", result);
+
+    result = power(2,3);  printf("result of 2^3    is  %d\n", result);
+    result = power(2,-2); printf("result of 2^-2   is  %d\n", result);
 
     exit(-1);
 
