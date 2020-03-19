@@ -100,43 +100,45 @@ int add (int a, int b) {
         printf("Underflow\n"); return(0);
     }
     else {
-        printf("Calculation is in-bounds. Result is %d\n", c);
         return c;
     }
 }
 
 // Return negation of a and add 1
-int neg(int a) {
-    int c = add( (~a), 1 );     // Define negation with ~ and safe add
-    return c;
-}
+int neg(int a) { return add( ~a, 1 ); }
 
-// Define safe subtract by safe add - negate b
-int sub(int a, int b){
+// Define safe subtract by add - negate b
+int sub(int a, int b) { 
     return add(a, neg(b));
 }
 
-/*
-    Safe mul() uses an iterative call to safe add()
-    to calculate a product. Remember that
-        5 x 4 = 5 + 5 + 5 + 5 = 20
-*/
-// Define safe multiply by calling safe add b times
-int mul(int a, int b){
-    // Declare and initialize cumulative result
+// Define multiply by repeatedly calling add
+int mul(int a, int b) {
     int result = 0;
-    // Declare sign of product - initially assume positive
-
+    // Get sign of product. Assign most significant digit to vars. If both 0 or both 1, then result is positive.
+    int x = a >> 31;
+    int y = b >> 31;
+    int negate = x ^ y;
+    // Force a, b positive for our loops to work. reassign negativity at end.
+    a &= 0x7FFFFFFF;
+    b &= 0x7FFFFFFF;
     // For efficiency - smaller number should be multiplier
-
-    // Absolute value of a and flip sign
-
-    // Absolute value of b and flip sign
-
+    int i = 0;
+    if (a < b) {
+        while (i < a) {
+            result = add(result, b);
+            i++;
+        }
+    }
+    else {
+        while (i < b) {
+            result = add(result, a);
+            i++;
+        }
+    }
     // Accumulate result
-
     // Set sign to output
-
+    if (negate) result = neg(result);
     return result;
 }
 
@@ -259,6 +261,11 @@ int main(int argc, char *argv[]) {
 
     // Write code here to test your functions
     // Uncomment code below when done
+    result = add(20, 32); printf("result of 20 + 32 is  %d\n", result);
+    result = neg(20);     printf("result of ~20     is %d\n", result);
+    result = sub(32, 20); printf("result of 32 - 20 is  %d\n", result);
+    result = mul( 2,4 );  printf("result of 2 * 3   is  %d\n", result);
+    result = mul( 2,-1 ); printf("result of 2 * 10  is  %d\n", result);
 
     exit(-1);
 
