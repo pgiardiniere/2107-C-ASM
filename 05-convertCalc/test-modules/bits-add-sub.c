@@ -65,14 +65,22 @@ int _add (int a, int b) {
 
 int sub (int a, int b) {
     // Do the bitwise subtraction
-    int c;
+    int x = a;              // required as we're doing bit ops, but want to check against initial vals later.
+    int y = b;
+    int carry;
+    while (y != 0) {
+        carry = (~x) & y;      // Get  all the 1s which will go left one position
+        x =       x  ^ y;      // Save the  0s/1s which stay in current  position
+        y = carry << 1;     // Push all carried 1s left
+    }
+    int c = x;
 
     // Detect whether we over/underflowed. If not, return result.
     if (a >= 0 && b <= 0 && c < a) {
-        printf("Overflow\n"); return(0);
+        printf("Overflow   %d\n"); return(0);
     }
     else if (a <= 0 && b >= 0 && c > a) {
-        printf("Underflow\n"); return(0);
+        printf("Underflow  %d\n"); return(0);
     }
     else {
         printf("Calculation is in-bounds. Result is %d\n", c);
@@ -81,24 +89,23 @@ int sub (int a, int b) {
 }
 
 int main() {
-
-    add(10000023, 1235456);
-
     // // Over/Underflow bounds testing
     // add(INT_MAX, 1);
     // add(INT_MIN, -1);
     // add(INT_MIN, INT_MIN);
     // add(INT_MAX, INT_MAX);
-
     printf("\n");
-
-    _add(10000023, 1235456);
-
     // // Over/Underflow bounds testing
     // _add(INT_MAX, 1);
     // _add(INT_MIN, -1);
     // _add(INT_MIN, INT_MIN);
     // _add(INT_MAX, INT_MAX);
+
+    // Subtract Over/Underflow bounds testing
+    sub(INT_MIN, 1);        //Under
+    sub(INT_MAX, -1);       //Over
+    sub(INT_MIN, INT_MAX);  //Under
+    sub(INT_MAX, INT_MIN);  //Over
 
     return 0;
 }
