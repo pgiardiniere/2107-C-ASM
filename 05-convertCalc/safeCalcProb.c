@@ -115,14 +115,15 @@ int sub(int a, int b) {
 // Define multiply by repeatedly calling add
 int mul(int a, int b) {
     int result = 0;
-    // Get sign of product. Assign most significant digit to vars. If both 0 or both 1, then result is positive.
-    int x = a >> 31;
-    int y = b >> 31;
-    int negate = x ^ y;
-    // Force a, b positive for our loops to work. reassign negativity at end.
-    a &= 0x7FFFFFFF;
-    b &= 0x7FFFFFFF;
-    // For efficiency - smaller number should be multiplier
+    // Get sign of product.
+    int negate;
+    if ( a < 0 && b < 0 || a > 0 && b > 0)
+        negate = 0;
+    else negate = 1;
+    // Force a, b positive. reassign negativity at end.
+    if (a < 0) a = neg(a);
+    if (b < 0) b = neg(b);
+
     int i = 0;
     if (a < b) {
         while (i < a) {
@@ -136,32 +137,28 @@ int mul(int a, int b) {
             i++;
         }
     }
-    // Accumulate result
-    // Set sign to output
     if (negate) result = neg(result);
     return result;
 }
 
-
-/*
-    Safe div() repeatedly subtracts b from a, counting the
-    number of subtractions until a < b, which it returns.
-*/
-// Define safe divide by calling safe subtract b times
-int div(int a, int b){
+// Define integer division by repeatedly calling subtract
+int div(int a, int b) {
     // Declare int to count how many times can b be subtracted from a
-    int cnt = 0;
-    // Declare sign
-
-    // Absolute value of a and flip sign
-
-    // Absolute value of b and flip sign
-
-    // loop to calculate how many times can b be subtracted from a
-
-    // Set sign to output
-
-    return cnt;
+    int count = 0;
+    // Get sign of product.
+    int negate;
+    if ( a < 0 && b < 0 || a > 0 && b > 0 )
+        negate = 0;
+    else negate = 1;
+    // Force a, b positive. reassign negativity at end.
+    if (a < 0) a = neg(a);
+    if (b < 0) b = neg(b);
+    while (b < a) {
+        a = sub(a, b);
+        count = add(count, 1);
+    }
+    if (negate) count = neg(count);
+    return count;
 }
 
 
@@ -238,7 +235,7 @@ int convert(char *input){
     return result;
 }
 
-void menu(){
+void menu() {
     printf("\nSafe Integer Calculator\n");
     printf("+ x to add\n");
     printf("- x to subtract\n");
@@ -264,8 +261,11 @@ int main(int argc, char *argv[]) {
     result = add(20, 32); printf("result of 20 + 32 is  %d\n", result);
     result = neg(20);     printf("result of ~20     is %d\n", result);
     result = sub(32, 20); printf("result of 32 - 20 is  %d\n", result);
-    result = mul( 2,4 );  printf("result of 2 * 3   is  %d\n", result);
-    result = mul( 2,-1 ); printf("result of 2 * 10  is  %d\n", result);
+    
+    result = mul( 2, 4 ); printf("result of 2 * 4   is  %d\n", result);
+    result = mul( 2,-1 ); printf("result of 2 * -1  is  %d\n", result);
+    result = div( 2,-1 ); printf("result of 2 / -1  is  %d\n", result);
+    result = div(-23,-2); printf("result of -23 / -2  is  %d\n", result);
 
     exit(-1);
 
