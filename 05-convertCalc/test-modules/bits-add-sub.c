@@ -31,7 +31,7 @@ int _add (int a, int b) {
     int x = a;
     int y = b;
     int carry;
-    while (y & 0xFFFFFFFF) {    // while y has ANY non-zero 1 bits
+    while (y & 0xFFFFFFFF) {    // while y has any non-zero bits
         carry = x & y;
         x =     x ^ y;
         y = carry << 1;

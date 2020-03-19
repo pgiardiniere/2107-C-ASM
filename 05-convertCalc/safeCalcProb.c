@@ -1,3 +1,10 @@
+// NOTE: I wasn't looking at instructions carefully when I programmed this.
+// Both _add() and add() have over/underflow protections, independent of one another. I commented out _add()s
+// Also _add(), I made the entire function without any relational operators --- bitwise only
+
+// I also defined sub() independently of _add(), before I created the neg() method.
+
+
 /*
     Safe integer calculator - warns if an overflow or
     underflow error occurs.
@@ -47,64 +54,67 @@ int system (const char* command);
 char * strtok (char * str, const char * delimiters);      // strtok() used once for newline character elimination.
 void exit (int status);                                   // exit() used to expedite testing.
 
-/*
-    This function should only use bitwise operators and
-    relational operators
-*/
-// Add operation using only bitwise operators
-int _add(int a, int b){
-    // Loop until b is zero
+int _add (int a, int b) {
+    int x = a;
+    int y = b;
+    int carry;
+    while (y & 0xFFFFFFFF) {    // while y has any non-zero bits
+        carry = x & y;
+        x =     x ^ y;
+        y = carry << 1;
+    }
+    int c = x;
+    // // Detect Underflow
+    // // Maximum possible underflow (INT_MIN + INT_MIN) yields 0. Min underflow is INT_MAX. Thus underflow -> c:Positive (0 <= c <= INT_MAX)
+    // int aNonPositive = a & INT_MIN;
+    // int bNonPositive = a & INT_MIN;
+    // x = c;
+    // x = ~x;                     // bitwise negate, if X was positive (underflow), make negative
+    // x = x >> 31;                // get x most significant digit
+    // if (aNonPositive)
+    //     if (bNonPositive)
+    //         if (x) { printf("Underflow\n"); return(0); }    // If X had overflowed, 
 
-        // Find carry 1 bits - a AND b assign to carry
+    // // Detect Overflow
+    // // Maximum possible overflow (INT_MAX + INT_MAX) yields -2. Min overflow is INT_MIN. Thus underflow -> c:Negative (INT_MIN <= c <= -2)
+    // int aNonNegative; if (aNonPositive) aNonNegative = 0;   // if (a <= 0), then !(a > 0)
+    // int bNonNegative; if (aNonPositive) bNonNegative = 0;
+    // x = c;
+    // x = x >> 31;
+    // if (aNonNegative)
+    //     if (bNonNegative)
+    //         if (x) { printf("Overflow\n"); return(0); }
 
-        // Find non carry 1 bits - a XOR b assign to a
-
-        // Multiply carry by 2 by shift and assign to b
-
-    return a;
+    // printf("Calculation is in-bounds. Result is %d\n", c);
+    return c;
 }
 
-
-/*
-    Safe add() should call _add() and check for both
-    overflow and underflow errors.
-*/
-// Safe add operation
-int add(int a, int b){
-    // Declare int for result
-    int result = 0;
-    // Call to _add() a and b and assign to result
-
-    // Check for overflow - look at page 90 in book
-
-    // Check for underflow - look at page 90 in book
-
-    return result;
+int add (int a, int b) {
+    int c = _add(a, b);
+    
+    // Detect whether we over/underflowed. If not, return result.
+    if (a >= 0 && b >= 0 && c < a) {
+        printf("Overflow\n"); return(0);
+    }
+    else if (a <= 0 && b <= 0 && c > a) {
+        printf("Underflow\n"); return(0);
+    }
+    else {
+        printf("Calculation is in-bounds. Result is %d\n", c);
+        return c;
+    }
 }
 
-
-/*
-    Negate a by using a bitwise operator and safe add().
-    Look on page 95 in book.
-    Replace the zero with an expression that solves this.
-*/
-// Define negation with ~ and safe add
-int neg(int a){
-    // Return negation of a and add 1
-    return 0;   // Replace 0 with code
+// Return negation of a and add 1
+int neg(int a) {
+    int c = add( (~a), 1 );     // Define negation with ~ and safe add
+    return c;
 }
 
-
-/*
-    Remember that subtraction is the same as addition
-    if you negate one of the operands.
-    Replace the zero with an expression that solves this.
-*/
 // Define safe subtract by safe add - negate b
 int sub(int a, int b){
-    return 0;  // Replace 0 with code
+    return add(a, neg(b));
 }
-
 
 /*
     Safe mul() uses an iterative call to safe add()
