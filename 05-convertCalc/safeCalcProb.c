@@ -143,7 +143,6 @@ int mul(int a, int b) {
 
 // Define integer division by repeatedly calling subtract
 int div(int a, int b) {
-    // Declare int to count how many times can b be subtracted from a
     int count = 0;
     // Get sign of product.
     int negate;
@@ -153,7 +152,7 @@ int div(int a, int b) {
     // Force a, b positive. reassign negativity at end.
     if (a < 0) a = neg(a);
     if (b < 0) b = neg(b);
-    while (b < a) {
+    while (b <= a) {
         a = sub(a, b);
         count = add(count, 1);
     }
@@ -162,7 +161,6 @@ int div(int a, int b) {
 }
 
 int mod(int a, int b){
-    // Declare int to count how many times can b be subtracted from a
     int count = 0;
     // Get sign of product.
     int negate;
@@ -172,7 +170,7 @@ int mod(int a, int b){
     // Force a, b positive. reassign negativity at end.
     if (a < 0) a = neg(a);
     if (b < 0) b = neg(b);
-    while (b < a) {
+    while (b <= a) {
         a = sub(a, b);
         count = add(count, 1);
     }
@@ -180,18 +178,9 @@ int mod(int a, int b){
     return a;
 }
 
-/*
-    Safe power() calculates as the math power function but
-    only uses the safe operations.
-        result = n^exp
-    Loop until exp is zero
-        result = result * n
-        exp = exp - 1
-    Remember the special case for n^0
-
-*/
 // Define power by calling multiply exp times
 int power(int n, int exp) {
+    if (exp < 0) { printf("No negative exponents allowed for set of integers.\n"); exit(-1); }
     if (exp == 0) return 1;
     int result = 1;
     while (exp > 0) {
@@ -201,42 +190,48 @@ int power(int n, int exp) {
     return result;
 }
 
-
-/*
-    This function extracts the integer value from the input string.
-        If input = "+ -123", result = -123.
-        If input = "* 987654", result = 987654.
-    The best way to solve complicated problems is to work them out
-    on paper first.
-*/
 // Extract the integer from the input string and convert to int
 int convert(char *input){
-    // Declare int for result extracted from input
+    // Declare int for result extracted from input // Declare int for sign of result,  // Declare two iterators
     int result = 0;
-    // Declare int for sign of result
-
-    // Declare two iterators
-
+    int sign;          // 0 denotes positive, 1 denotes negative
+    int i;
+    int j;
     // Declare a buffer for numeric chars
-
-    // Set error to zero - no error found yet
-
+    char nums[50];
+    // Set error to zero - no error found yet     // int error;
     // Check for space in element 1
-
+    if ( !(input[1] == 32) ) { printf("Unexpected input, should have a space here\n"); exit(-1); }
     // Check for negative integer at element 2
-
+    if ( input[2] == 45 ) { 
+        sign = 1; 
+        i = 3;
+    }
+    else {
+        sign = 0;
+        i = 2;
+    }
     // Loop to copy all numeric chars to buffer
-    // i is iterator for input string and should start at first numeric char
-    // j is iterator for buffer where numeric chars are copied
-    // This must test for chars between 0 and 9
-
-    // i gets position of last numeric char in buffer
-
-    // j is now used for power function - start at zero
-
-    // Construct integer from buffer using power j increases and i decreases
-
-    // Set sign for output
+        // i is iterator for input string and should start at first numeric char
+        // j is iterator for buffer where numeric chars are copied
+    j = 0;
+    while (input[i] != '\0') {
+        if (input[i] < 48 || input[i] > 57) { printf("that's not a numeric char, enter valid input next time"); exit(-1); }
+        nums[j] = input[i];
+        j++;
+        i++;
+    }
+    nums[j] = '\0';
+    // Now that verified good input, build our int from the clean char array
+    j--;
+    i = 1;
+    while (j >= 0) {
+        printf("subresult is %d\n", result);
+        result += mul((nums[j] - 48), i);
+        i *= 10;
+        j--;                                    // we could have used the arithmetic functions defined above instead of arithmetic operators
+    }   
+    if (sign == 1) { result = neg(result); }    // Re-apply our sign for output
     return result;
 }
 
@@ -260,22 +255,6 @@ int main(int argc, char *argv[]) {
     int n = 0;          // For number conversion from input string
     char input[50];     // Input string
     input[0] = '\0';    // Put null in operator char so loop works
-
-    // Write code here to test your functions
-    // Uncomment code below when done
-    result = add(20, 32); printf("result of 20 + 32 is  %d\n", result);
-    result = neg(20);     printf("result of ~20     is %d\n", result);
-    result = sub(32, 20); printf("result of 32 - 20 is  %d\n", result);
-    
-    result = mul( 2, 4 ); printf("result of 2 * 4   is  %d\n", result);
-    result = mul( 2,-1 ); printf("result of 2 * -1  is  %d\n", result);
-    result = div( 2,-1 ); printf("result of 2 / -1  is  %d\n", result);
-    result = mod( 2,-1 ); printf("result of 2 %% -1  is  %d\n", result);
-
-    result = power(2,3);  printf("result of 2^3    is  %d\n", result);
-    result = power(2,-2); printf("result of 2^-2   is  %d\n", result);
-
-    exit(-1);
 
     // Loop until quit is selected
     while(input[0] != 'q' && input[0] != 'Q'){
