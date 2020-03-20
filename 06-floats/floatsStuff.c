@@ -8,7 +8,6 @@
 #define SPEC 2
 #define BIAS 127
 
-
 /*
     Declare a "typedef struct {} flt;" to contain data for a float
     The data should include:
@@ -26,8 +25,12 @@
         man = 0.9218750000
         mode = NORM
 */
-
-
+typedef struct {
+    int sign;
+    int exp;
+    int mant;
+    int mode;
+} flt;
 
 
 /*
@@ -40,9 +43,12 @@
     indirection trick.  This can easily be done in one line of code.
     The function should accept a float and return an int.
 */
-
-
-
+// Get the bits of a float, and instead store them in an int
+int getFltBitsInt() {
+    int bits = 0;
+    // The magical one-liner
+    return bits;
+}
 
 /*
     Write a function that returns the sign of a float as a char.

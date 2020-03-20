@@ -19,3 +19,6 @@
 05-convertCalc/test-modules/!*/
 05-convertCalc/test-modules/!*.*
 05-convertCalc/test-modules/!sanitycheck.c
+
+06-floats/floatsStuff
+06-floats/sandbox
