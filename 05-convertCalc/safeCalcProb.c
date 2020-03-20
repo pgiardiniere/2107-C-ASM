@@ -1,55 +1,19 @@
-// NOTE: I wasn't looking at instructions carefully when I programmed this.
-// Both _add() and add() have over/underflow protections, independent of one another. I commented out _add()s
-// Also _add(), I made the entire function without any relational operators --- bitwise only
-
-// I also defined sub() independently of _add(), before I created the neg() method.
-
-
-/*
-    Safe integer calculator - warns if an overflow or
-    underflow error occurs.
-
-    Menu
-    Negation
-    Safe unsigned ops
-    Safe signed ops
-    Arithmetic without + - * / % ++ or --
-
-    Code the functions below and uncomment the code in main()
-    when completed.
-
-    Code the functions in order as they appear.  Subsequent
-    functions depend on previous functions.  You cannot use
-    any math operators (+ - * / % ++ or --) except simple
-    assignment (=).  However, you may use relational and
-    logical operators.
-
-    The _add() function should only use bitwise operators.  All
-    other functions can call functions necessary to complete the
-    required operation.  I added some hints above functions.
-
-*/
+// NOTE:    Both _add() and add() have over/underflow protections, independent of one another. I commented out _add()s
+//          Also _add(), I made the entire function without any relational operators --- bitwise only
 #include <stdio.h>
-#include <limits.h>         // temporariliy included for easy limit comparison during testing
-
-// Review :: Operator types allowed :: (obviously, assignment.)
-//      Relational      ==  !=  <  <=   >  >=
-//      Logical         &&  ||  !
-//      Bitwise         &   |   ^   ~   << >>
-
+#include <limits.h>         // Used library to proxy 0x7FFFFFFF to INT_MAX, and 0x80000000 to INT_MIN
 
 // Prototypes
-int _add(int a, int b);     // Bitwise
-int add(int a, int b);      // Bitwise || Logical || Relational
+int _add(int a, int b);
+int add(int a, int b);
 int sub(int a, int b);
-int neg(int a);             // also, any function may use another which you have defined to get its output. (mult as repeated add, for ex)
+int neg(int a);
 int mul(int a, int b);
 int div(int a, int b);
 int mod(int a, int b);
 int power(int a, int b);
 int convert(char *input);
-
-// Prototypes (stops all implicit declaration warnings)
+// Prototypes (to stop implicit declaration warnings)
 int system (const char* command);
 char * strtok (char * str, const char * delimiters);      // strtok() used once for newline character elimination.
 void exit (int status);                                   // exit() used to expedite testing.
@@ -94,10 +58,10 @@ int add (int a, int b) {
     
     // Detect whether we over/underflowed. If not, return result.
     if (a >= 0 && b >= 0 && c < a) {
-        printf("Overflow\n"); return(0);
+        printf("Overflow\n"); exit(-1);
     }
     else if (a <= 0 && b <= 0 && c > a) {
-        printf("Underflow\n"); return(0);
+        printf("Underflow\n"); exit(-1);
     }
     else {
         return c;
@@ -180,7 +144,7 @@ int mod(int a, int b){
 
 // Define power by calling multiply exp times
 int power(int n, int exp) {
-    if (exp < 0) { printf("No negative exponents allowed for set of integers.\n"); exit(-1); }
+    if (exp < 0) { printf("No negative exponents allowed on set of integers.\n"); exit(-1); }
     if (exp == 0) return 1;
     int result = 1;
     while (exp > 0) {
@@ -191,7 +155,7 @@ int power(int n, int exp) {
 }
 
 // Extract the integer from the input string and convert to int
-int convert(char *input){
+int convert(char *input) {
     // Declare int for result extracted from input // Declare int for sign of result,  // Declare two iterators
     int result = 0;
     int sign;          // 0 denotes positive, 1 denotes negative
@@ -216,7 +180,7 @@ int convert(char *input){
         // j is iterator for buffer where numeric chars are copied
     j = 0;
     while (input[i] != '\0') {
-        if (input[i] < 48 || input[i] > 57) { printf("that's not a numeric char, enter valid input next time"); exit(-1); }
+        if (input[i] < 48 || input[i] > 57) { printf("that's not a numeric char, enter valid input next time\n"); exit(-1); }
         nums[j] = input[i];
         j++;
         i++;
@@ -226,7 +190,6 @@ int convert(char *input){
     j--;
     i = 1;
     while (j >= 0) {
-        printf("subresult is %d\n", result);
         result += mul((nums[j] - 48), i);
         i *= 10;
         j--;                                    // we could have used the arithmetic functions defined above instead of arithmetic operators
