@@ -2,6 +2,7 @@
 #include <limits.h>
 #include <math.h>
 #include <float.h>
+#include <stdlib.h>     // required for malloc()
 
 #define NORM 0
 #define DNORM 1
@@ -32,43 +33,22 @@ typedef struct {
     int mode;
 } flt;
 
-
-/*
-    Write a function get_flt_bits_int to return an integer with the
-    bits copied from a float.
-    Example:
-        for f = -15.375,
-        the bits of int n = 11000001011101100000000000000000
-    Look at the slides and code from the float lectures and use the
-    indirection trick.  This can easily be done in one line of code.
-    The function should accept a float and return an int.
-*/
 // Get the bits of a float, and instead store them in an int
-int getFltBitsInt() {
-    int bits = 0;
-    // The magical one-liner
-    return bits;
+int getFltBitsInt(float f) {
+    return *(int*)&f;   // &f get float pointer location, (int*) cast to int pointer, *(int*) interpret memory at int* pointer as an int val
 }
 
-/*
-    Write a function that returns the sign of a float as a char.
-    You should call get_flt_bits_int to get the bits in an int
-    and return '1' if the sign is negative else return '0'.  The
-    function should accept a float and return a string.
-*/
+char getFltSignAsChar(float f) {    // Write a function that returns the sign of a float as a char.
+    int bits = getFltBitsInt(f);    // You should call get_flt_bits_int to get the bits in an int
+    bits >>= 31;                    // and return '1' if the sign is negative else return '0'.  The
+    return (bits & 1) ? '1' : '0';  // function should accept a float and return a string.
+}
 
-
-
-
-/*
-    Write a function that returns the sign of a float as an integer.
-    You should call get_flt_bits_int to get the bits in an int
-    and return -1 if the sign is negative else return 1.  The function
-    should accept a float and return an int.
-*/
-
-
-
+char getFltSignAsInt(float f) {     // Write a function that returns the sign of a float as an integer.
+    int bits = getFltBitsInt(f);    // You should call get_flt_bits_int to get the bits in an int
+    bits >>= 31;                    // and return -1 if the sign is negative else return 1.  The function
+    return (bits & 1) ? -1 : 1;     // should accept a float and return an int.
+}
 
 /*
     Write a function to return a string containing the
@@ -77,12 +57,25 @@ int getFltBitsInt() {
     the bits in an int and return the string.
     Example:
         for f = -15.375
-            n = 11000001011101100000000000000000
+            n = 1 10000010 11101100000000000000000
             the exponent bits are "10000010"
     The function should accept a float and return a string.
 */
+char* getFltExpBitsAsStr(float f) {
+    char* expStr = malloc(9);
+    if (expStr == NULL) { perror("Error : "); exit(-1); }
+    expStr[8] = '\0';
 
-
+    int bits = getFltBitsInt(f);
+    bits >>= 23;
+    int i = 7;
+    while (i >= 0) {
+        expStr[i] = (bits & 1) ? '1' : '0';
+        bits >>= 1;
+        i--;
+    }
+    return expStr;
+}
 
 
 /*
@@ -97,6 +90,19 @@ int getFltBitsInt() {
             the actual value of the exponent is 3
     The function should accept a float and return an int.
 */
+int getFltExp(float f) {
+    char* expStr = getFltExpBitsAsStr(f);
+    int exp = 0;
+    int place = 1;
+    int i = 7;
+    while (i >= 0) {
+        exp += (expStr[i] - 48) * place;
+        place *= 2;
+        i--;
+    }
+    free(expStr);
+    return exp;
+}
 
 
 
@@ -224,8 +230,19 @@ int getFltBitsInt() {
     get_flt_bits_val
 */
 int main(){
+    float f = -15.375;
+    // char c = getFltSign(f);
+    // f = 1.375;
+    // c = getFltSign(f);
 
+    char* expStr = getFltExpBitsAsStr(f);
+    printf("expStr is %s\n", expStr);
+    free(expStr);
 
+    int exp = getFltExp(f);                     // the exponent bits are 10000010
+    printf("exp contains %d\n", exp);           // the actual value of the exponent is 3
+    // actual return :: exp contains 130
+    // I'm missing a formula of some kind. I read the bits correctly (i.e. directly)
 
 
     return 0;
