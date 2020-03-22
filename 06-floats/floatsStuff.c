@@ -35,40 +35,31 @@ typedef struct {
 
 // Get the bits of a float, and instead store them in an int
 int getFltBitsInt(float f) {
-    return *(int*)&f;   // &f get float pointer location, (int*) cast to int pointer, *(int*) interpret memory at int* pointer as an int val
+    return *(int*)&f;
 }
 
-char getFltSignAsChar(float f) {    // Write a function that returns the sign of a float as a char.
-    int bits = getFltBitsInt(f);    // You should call get_flt_bits_int to get the bits in an int
-    bits >>= 31;                    // and return '1' if the sign is negative else return '0'.  The
-    return (bits & 1) ? '1' : '0';  // function should accept a float and return a string.
+char getFltSignAsChar(float f) {        // Write a function that returns the sign of a float as a char.
+    int bits = getFltBitsInt(f);        // You should call get_flt_bits_int to get the bits in an int
+    bits >>= 31;                        // and return '1' if the sign is negative else return '0'.  The
+    return (bits & 1) ? '1' : '0';      // function should accept a float and return a string.
 }
 
-char getFltSignAsInt(float f) {     // Write a function that returns the sign of a float as an integer.
-    int bits = getFltBitsInt(f);    // You should call get_flt_bits_int to get the bits in an int
-    bits >>= 31;                    // and return -1 if the sign is negative else return 1.  The function
-    return (bits & 1) ? -1 : 1;     // should accept a float and return an int.
+char getFltSignAsInt(float f) {         // Write a function that returns the sign of a float as an integer.
+    int bits = getFltBitsInt(f);        // You should call get_flt_bits_int to get the bits in an int
+    bits >>= 31;                        // and return -1 if the sign is negative else return 1.  The function
+    return (bits & 1) ? -1 : 1;         // should accept a float and return an int.
 }
 
-/*
-    Write a function to return a string containing the
-    actual binary value of the exponent of a float in a
-    char array.  You should call get_flt_bits_int to get
-    the bits in an int and return the string.
-    Example:
-        for f = -15.375
-            n = 1 10000010 11101100000000000000000
-            the exponent bits are "10000010"
-    The function should accept a float and return a string.
-*/
-char* getFltExpBitsAsStr(float f) {
-    char* expStr = malloc(9);
-    if (expStr == NULL) { perror("Error : "); exit(-1); }
-    expStr[8] = '\0';
-
-    int bits = getFltBitsInt(f);
-    bits >>= 23;
-    int i = 7;
+char* getFltExpStr(float f) {
+    char* expStr = malloc(9);                   // Write a function to return a string containing the
+    if (expStr == NULL) {                       // actual binary value of the exponent of a float in a
+        perror("Error : ");                     // char array.  You should call get_flt_bits_int to get
+        exit(-1);                               // the bits in an int and return the string.
+    }                                           // Example:
+    expStr[8] = '\0';                               // for f = -15.375
+    int bits = getFltBitsInt(f);                        // n = 1 10000010 11101100000000000000000
+    bits >>= 23;                                        // the exponent bits are "10000010"
+    int i = 7;                                  // The function should accept a float and return a string.
     while (i >= 0) {
         expStr[i] = (bits & 1) ? '1' : '0';
         bits >>= 1;
@@ -77,112 +68,86 @@ char* getFltExpBitsAsStr(float f) {
     return expStr;
 }
 
-
-/*
-    Write a function to return an integer containing the
-    actual integer value of the exponent of a float.  You
-    should call get_flt_bits_int to get the bits in an int
-    and return the int with the exponent value.
-    Example:
-        for f = -15.375
-            n = 11000001011101100000000000000000
-            the exponent bits are 10000010
-            the actual value of the exponent is 3
-    The function should accept a float and return an int.
-*/
 int getFltExp(float f) {
-    char* expStr = getFltExpBitsAsStr(f);
-    int exp = 0;
-    int place = 1;
-    int i = 7;
-    while (i >= 0) {
-        exp += (expStr[i] - 48) * place;
-        place *= 2;
-        i--;
-    }
-    free(expStr);
+    char* expStr = getFltExpStr(f);       // Write a function to return an integer containing the
+    int exp = 0;                                // actual integer value of the exponent of a float.  You
+    int place = 1;                              // should call get_flt_bits_int to get the bits in an int
+    int i = 7;                                  // and return the int with the exponent value.
+    while (i >= 0) {                            // Example:
+        exp += (expStr[i] - 48) * place;        //     for f = -15.375
+        place *= 2;                             //         n = 11000001011101100000000000000000
+        i--;                                    //         the exponent bits are 10000010
+    }                                           //         the actual value of the exponent is 3
+    free(expStr);                               // The function should accept a float and return an int.
     exp -= BIAS;
     return exp;
 }
 
-/*
-    Write a function to return an integer containing the
-    mode of the exponent of a float.  You should call
-    get_flt_exp_val to get the bits in an int and return
-    the int with the mode value.
-    Example:
-        for f = -15.375
-            n = 11000001011101100000000000000000
-            the exponent bits are 10000010
-            the mode is NORM
-    The function should accept a float and return an int.
-*/
-int getExpMode(float f) {
-    int exp = getFltExp(f);
-    int mantissa = getFltMan(f);
-    int expMode;
-    if (exp == -127) 
-        expMode = DENORMALIZED;
-    if (exp ==  128 && mantissa) 
-        expMode = SPECIAL;
-    else 
-        expMode = NORMALIZED;
-    return expMode;
+int getExpMode(float f) {           
+    int exp = getFltExp(f);             // Write a function to return an integer containing the
+    // int mantissa = getFltMan(f);        // mode of the exponent of a float.  You should call
+    int expMode;                        // get_flt_exp_val to get the bits in an int and return
+    if (exp == -127)                    // the int with the mode value.
+        expMode = DENORMALIZED;         // Example:
+    if (exp ==  128) // && mantissa     //     for f = -15.375
+        expMode = SPECIAL;              //         n = 11000001011101100000000000000000
+    else                                //         the exponent bits are 10000010
+        expMode = NORMALIZED;           //         the mode is NORM
+    return expMode;                     // The function should accept a float and return an int.
 }
 
-
-
-/*
-    Write a function to return a string containing the
-    actual binary value of the mantissa of a float in a
-    char array.  You should call get_flt_bits_int to get
-    the bits in an int and return the string.
-    Example:
-        for f = -15.375
-            n = 11000001011101100000000000000000
-            the mantissa bits are "11101100000000000000000"
-    The function should accept a float and return a string.
-*/
-char* getFltManAsStr(float f) {
-    
+char* getFltManStr(float f) {         
+    char* manStr = malloc(24);          // Write a function to return a string containing the
+    if (manStr == NULL) {               // actual binary value of the mantissa of a float in a
+        perror("Error : ");             // char array.  You should call get_flt_bits_int to get
+        exit(-1);                       // the bits in an int and return the string.
+    }                                   // Example:
+    manStr[23] = '\0';                  //     for f = -15.375
+    int bits = getFltBitsInt(f);        //         n = 11000001011101100000000000000000
+    bits >>= 0;                         //         the mantissa bits are "11101100000000000000000"
+    int i = 22;                         // The function should accept a float and return a string.
+    while (i >= 0) {                    
+        manStr[i] = (bits & 1) ? '1' : '0';
+        bits >>= 1;
+        i--;
+    }
+    return manStr;
 }
 
+float getFltMan(float f) {
+    char* manStr = getFltManStr(f);       // Write a function to return a float containing the
+    float man = 0;                          // actual float value of the mantissa of a float.  You
+    float place = 0.5;                      // should call get_flt_bits_int to get the bits in an int
+    int i = 0;                              // and return the int with the mantissa value.
+    while (manStr[i]) {                     // Example:
+        man += (manStr[i] - 48) * place;    //     for f = -15.375
+        place *= 0.5;                       //         n = 11000001011101100000000000000000
+        i++;                                //         the mantissa bits are 11101100000000000000000
+    }                                       //         the actual value of the mantissa is 0.9218750000
+    free(manStr);                           // The function should accept a float and return an int.
+    return man;
+}
 
-
-/*
-    Write a function to return a float containing the
-    actual float value of the mantissa of a float.  You
-    should call get_flt_bits_int to get the bits in an int
-    and return the int with the mantissa value.
-    Example:
-        for f = -15.375
-            n = 11000001011101100000000000000000
-            the mantissa bits are 11101100000000000000000
-            the actual value of the mantissa is 0.9218750000
-    The function should accept a float and return an int.
-*/
-
-
-
-
-/*
-    Write a function to return a string containing the
-    actual binary value of a float in a char array.  You
-    should call get_flt_sign_char, get_flt_exp_str and
-    get_flt_man_str to get the bits in an char and two
-    strings and return the concatenated string.
-    Example:
-        for f = -15.375
-            n = 11000001011101100000000000000000
-            The sign is '1'
-            the exponent is "10000010"
-            and the mantissa bits are "11101100000000000000000"
-            The string should be formatted as:
-                "1 10000010 11101100000000000000000" to clearly
-                separate the 3 parts.
-    The function should accept a float and return a string.
-*/
-
+char* getFltBitString(float f) {
+    char* bitStr = (char*) malloc(34);  // Write a function to return a string containing the
+    bitStr[0] = getFltSignAsChar(f);    // actual binary value of a float in a char array.  You
+    bitStr[1] = ' ';                    // should call get_flt_sign_char, get_flt_exp_str and
+    char* expStr = getFltExpStr(f);     // get_flt_man_str to get the bits in an char and two
+    int i = 0;                          // strings and return the concatenated string.
+    while (i < 8) {                     // Example:
+        bitStr[i + 2] = expStr[i];      //     for f = -15.375
+        i++;                            //         n = 11000001011101100000000000000000
+    }                                   //         The sign is '1'
+    bitStr[10] = ' ';                   //         the exponent is "10000010"
+    char* manStr = getFltManStr(f);     //         and the mantissa bits are "11101100000000000000000"
+    i = 11;                             //         The string should be formatted as:
+    while (i < 32) {                    //             "1 10000010 11101100000000000000000" to clearly
+        bitStr[i] = manStr[i - 11];     //             separate the 3 parts.
+        i++;                            // The function should accept a float and return a string.
+    }
+    bitStr[33] = '\0';
+    return bitStr;
+}
 
 
 
@@ -224,14 +189,6 @@ char* getFltManAsStr(float f) {
 /*
     Write a main function that calls an prints results for
     each function when completed.
-    get_flt_sign_char
-    get_flt_sign_val
-
-    get_flt_exp_str
-    get_flt_exp_val
-
-    get_flt_man_str
-    get_flt_man_val
 
     get_flt_bits_str
 
@@ -241,19 +198,29 @@ char* getFltManAsStr(float f) {
     get_flt_bits_val
 */
 int main(){
+    printf("float f is -15.375\n#########################\n");
     float f = -15.375;
+    int bits = getFltBitsInt(f);
+    printf("bits: as int is decimal %d, or hex 0x%X\n", bits, bits);
+
+    char c = getFltSignAsChar(f);
+    int sign = getFltSignAsInt(f);
+    printf("signs: char sign returns %c and int sign returns %d\n", c, sign);
+
+    char* str = getFltExpStr(f);
     int exp = getFltExp(f);
-    printf("exp of %f (less Bias) is %d\n", f, exp);     // prints 3
+    printf("exponents: str exp returns %s and int exp returns %d\n", str, exp);
+    free(str);
 
-    f = 0;
-    exp = getFltExp(f);
-    printf("exp of %f (less Bias) is %d\n", f, exp);     // prints -127  --- wrong? but makes sense, it's not detecting denormalized I think
+    char* manStr = getFltManStr(f);
+    float man = getFltMan(f);
+    printf("mantissa: str   mantissa returns %s\n", manStr);
+    printf("          float mantissa returns %f\n", man);
+    free(manStr);
 
-    f = 1;
-    exp = getFltExp(f);
-    printf("exp of %f (less Bias) is %d\n", f, exp);     // prints 0, expected
-
-
+    char* bitStr = getFltBitString(f);
+    printf("bits: as string is %s\n", bitStr);
+    free(bitStr);
 
     return 0;
 }
