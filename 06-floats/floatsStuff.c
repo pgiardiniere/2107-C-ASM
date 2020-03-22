@@ -117,7 +117,18 @@ int getFltExp(float f) {
             the mode is NORM
     The function should accept a float and return an int.
 */
-
+int getExpMode(float f) {
+    int exp = getFltExp(f);
+    int mantissa = getFltMan(f);
+    int expMode;
+    if (exp == -127) 
+        expMode = DENORMALIZED;
+    if (exp ==  128 && mantissa) 
+        expMode = SPECIAL;
+    else 
+        expMode = NORMALIZED;
+    return expMode;
+}
 
 
 
@@ -132,7 +143,9 @@ int getFltExp(float f) {
             the mantissa bits are "11101100000000000000000"
     The function should accept a float and return a string.
 */
-
+char* getFltManAsStr(float f) {
+    
+}
 
 
 
