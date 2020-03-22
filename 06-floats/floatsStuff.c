@@ -183,7 +183,7 @@ float Flt_to_float(flt fl) {
 
 // Simply change the value of float f below to test entire suite of functions with different floating-point numbers.
 int main() {
-    float f = -15.3;
+    float f = -15.375;
     printf("float f is %f\n#########################\n", f);
 
     int bits = getFltBitsInt(f);
