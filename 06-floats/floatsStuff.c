@@ -9,23 +9,6 @@
 #define SPECIAL 2
 #define BIAS 127
 
-/*
-    Declare a "typedef struct {} flt;" to contain data for a float
-    The data should include:
-        An integer for the sign
-            (1 for positive, -1 for negative)
-        An integer for the exponent value
-            (should be bit value to integer minus BIAS or -126 for denormalized)
-        A float to contain the value of the mantissa
-            (Actual float value extracted from the binary value)
-        An integer to contain the mode using the defines above
-            (NORM, DNORM and SPEC)
-    Example after processing: -15.375 = 1 10000010 11101100000000000000000
-        sign = -1
-        exp = 3
-        man = 0.9218750000
-        mode = NORM
-*/
 typedef struct {
     int sign;
     int exp;
@@ -172,11 +155,6 @@ flt assembleFlt(float f) {
     return fl;
 }
 
-/*
-    Write a function to print a flt struct to screen.
-    It should accept a flt struct and return nothing.
-    Hint: Use if statement to print mode.
-*/
 void printFlt(flt fl) {
     printf("flt.sign is %d\n", fl.sign);
     printf("flt.exp is %d\n", fl.exp);
@@ -186,16 +164,9 @@ void printFlt(flt fl) {
     if (fl.mode == 2) printf("flt.mode is Special\n");
 }
 
-/*
-    Write a function to get the actual float value back
-    out of a flt struct.
-    Hints:
-        The float value produced will depend on the mode.
-        To set a float to infinity use the math library constant INFINITY
-        To set a float to not-a-number use the math library constant NAN
-        Check the slides and text for conditions for NORN, DNORM and SPEC
-        You need to return (sign) * M * 2^e
-*/
+// The float value produced will depend on the mode.
+// Check the slides and text for conditions for NORM, DNORM and SPEC
+// You need to return (sign) * M * 2^e
 float Flt_to_float(flt fl) {
     float f;
     if (fl.mode == SPECIAL) {
@@ -210,24 +181,21 @@ float Flt_to_float(flt fl) {
     return f;
 }
 
-/*
-    Write a main function that calls an prints results for
-    each function when completed.
-*/
+// Simply change the value of float f below to test entire suite of functions with different floating-point numbers.
 int main() {
-    float f = -15.375;
+    float f = -15.3;
     printf("float f is %f\n#########################\n", f);
 
     int bits = getFltBitsInt(f);
-    printf("bits: as int is decimal %d, or hex 0x%X\n", bits, bits);
+    printf("bits:     int bits is decimal %d, or hex 0x%X\n", bits, bits);
 
     char c = getFltSignAsChar(f);
     int sign = getFltSign(f);
-    printf("sign: char sign returns %c and int sign returns %d\n", c, sign);
+    printf("sign:     char sign returns    %c, int sign returns %d\n", c, sign);
 
     char* str = getFltExpStr(f);
     int exp = getFltExp(f);
-    printf("exponent: str exp returns %s and int exp returns %d\n", str, exp);
+    printf("exponent: str exp returns %s, int exp returns %d\n", str, exp);
     free(str);
 
     char* manStr = getFltManStr(f);
