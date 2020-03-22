@@ -4,9 +4,9 @@
 #include <float.h>
 #include <stdlib.h>     // required for malloc()
 
-#define NORM 0
-#define DNORM 1
-#define SPEC 2
+#define NORMALIZED 0        // but... should be 1
+#define DENORMALIZED 1      // but... should be 0   // email prof? maybe not.
+#define SPECIAL 2
 #define BIAS 127
 
 /*
@@ -101,11 +101,9 @@ int getFltExp(float f) {
         i--;
     }
     free(expStr);
+    exp -= BIAS;
     return exp;
 }
-
-
-
 
 /*
     Write a function to return an integer containing the
@@ -231,18 +229,17 @@ int getFltExp(float f) {
 */
 int main(){
     float f = -15.375;
-    // char c = getFltSign(f);
-    // f = 1.375;
-    // c = getFltSign(f);
+    int exp = getFltExp(f);
+    printf("exp of %f (less Bias) is %d\n", f, exp);     // prints 3
 
-    char* expStr = getFltExpBitsAsStr(f);
-    printf("expStr is %s\n", expStr);
-    free(expStr);
+    f = 0;
+    exp = getFltExp(f);
+    printf("exp of %f (less Bias) is %d\n", f, exp);     // prints -127  --- wrong? but makes sense, it's not detecting denormalized I think
 
-    int exp = getFltExp(f);                     // the exponent bits are 10000010
-    printf("exp contains %d\n", exp);           // the actual value of the exponent is 3
-    // actual return :: exp contains 130
-    // I'm missing a formula of some kind. I read the bits correctly (i.e. directly)
+    f = 1;
+    exp = getFltExp(f);
+    printf("exp of %f (less Bias) is %d\n", f, exp);     // prints 0, expected
+
 
 
     return 0;
