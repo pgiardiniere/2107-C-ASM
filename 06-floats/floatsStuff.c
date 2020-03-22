@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <limits.h>
-#include <math.h>
+#include <math.h>       // MUST COMPILE WITH "gcc -o floatsStuff floatsStuff.c -lm" to get linker to find pow() function.
 #include <float.h>
 #include <stdlib.h>     // required for malloc()
 
@@ -197,55 +197,55 @@ void printFlt(flt fl) {
         You need to return (sign) * M * 2^e
 */
 float Flt_to_float(flt fl) {
-    // if (mode == DENORMALIZED) {
-    //     exp = -126;
-    // }
-    // else if (mode == SPECIAL) {  // i.e. exp==255
-    //     if (mantissa == 0)
-    //         f = INFINITY;   // float is infinity
-    //     else
-    //         f = NAN;        // float is Not-a-Number
-    // }
-    // else if (mode == NORMALIZED) {
-    //     exp -= BIAS;
-    // }
+    float f;
+    if (fl.mode == SPECIAL) {
+        f = (fl.mant == 0) ? INFINITY: NAN;
+    }
+    else if (fl.mode == DENORMALIZED) {
+        f = fl.sign * fl.mant * (int) pow(2, fl.exp);
+    }
+    else if (fl.mode == NORMALIZED) {
+        f = fl.sign * (1 + fl.mant) * (int) pow(2, fl.exp);
+    }
+    return f;
 }
-
-
 
 /*
     Write a main function that calls an prints results for
     each function when completed.
-
-    get_flt_val_flt
-    print_flt
-
-    get_flt_bits_val
 */
 int main() {
-    printf("float f is -15.375\n#########################\n");
     float f = -15.375;
+    printf("float f is %f\n#########################\n", f);
+
     int bits = getFltBitsInt(f);
     printf("bits: as int is decimal %d, or hex 0x%X\n", bits, bits);
 
     char c = getFltSignAsChar(f);
     int sign = getFltSign(f);
-    printf("signs: char sign returns %c and int sign returns %d\n", c, sign);
+    printf("sign: char sign returns %c and int sign returns %d\n", c, sign);
 
     char* str = getFltExpStr(f);
     int exp = getFltExp(f);
-    printf("exponents: str exp returns %s and int exp returns %d\n", str, exp);
+    printf("exponent: str exp returns %s and int exp returns %d\n", str, exp);
     free(str);
 
     char* manStr = getFltManStr(f);
     float man = getFltMan(f);
     printf("mantissa: str   mantissa returns %s\n", manStr);
-    printf("          float mantissa returns %f\n", man);
+    printf("          float mantissa returns %f\n\n", man);
     free(manStr);
 
     char* bitStr = getFltBitString(f);
-    printf("bits: as string is %s\n", bitStr);
+    printf("bits: as string is %s\n\n", bitStr);
     free(bitStr);
+
+    flt fl = assembleFlt(f);
+    printFlt(fl);    
+    printf("\n");
+
+    float translated = Flt_to_float(fl);
+    printf("translated flt back into float with value %f\n", translated);
 
     return 0;
 }
