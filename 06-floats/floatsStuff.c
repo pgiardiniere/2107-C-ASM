@@ -2,12 +2,15 @@
 #include <limits.h>
 #include <math.h>
 #include <float.h>
-#include <stdlib.h>     // required for malloc()
+#include <stdlib.h>         // required for malloc()
 
 #define NORMALIZED 0        // but... should be 1
 #define DENORMALIZED 1      // but... should be 0   // email prof? maybe not.
 #define SPECIAL 2
 #define BIAS 127
+
+// Prototypes
+int getFltMan(float f);
 
 /*
     Declare a "typedef struct {} flt;" to contain data for a float
@@ -130,8 +133,6 @@ int getExpMode(float f) {
     return expMode;
 }
 
-
-
 /*
     Write a function to return a string containing the
     actual binary value of the mantissa of a float in a
@@ -140,14 +141,26 @@ int getExpMode(float f) {
     Example:
         for f = -15.375
             n = 11000001011101100000000000000000
-            the mantissa bits are "11101100000000000000000"
+            the mantissa bits are "11101100000000000000000"     
     The function should accept a float and return a string.
 */
 char* getFltManAsStr(float f) {
-    
+    char* manStr = malloc(24);
+    if (manStr == NULL) { perror("Error : "); exit(-1); }
+    manStr[24] = '\0';
+
+    int bits = getFltBitsInt(f);
+    int i = 23;
+    while (i >= 0) {
+        manStr[i] = (bits & 1) ? '1' : '0';
+        bits >>= 1;
+        i--;
+    }
+    // figure out what belongs in 0 position
+    int expMode = getExpMode(f);
+    manStr[0] = (expMode == 0) ? '1' : '0';
+    return manStr;
 }
-
-
 
 /*
     Write a function to return a float containing the
@@ -161,7 +174,20 @@ char* getFltManAsStr(float f) {
             the actual value of the mantissa is 0.9218750000
     The function should accept a float and return an int.
 */
-
+int getFltMan(float f) {
+    char* manStr = getFltManAsStr(f);
+    float man = 0;
+    float place = 0.5;
+    int i = 0;
+    while (i <= 23) {
+        man += (manStr[i] - 48) * place;
+        place *= 0.5;
+        i++;
+    }
+    free(manStr);
+    printf("the actual value of the mantissa is %f\n", man);
+    return man;
+}
 
 
 
@@ -244,16 +270,20 @@ int main(){
     float f = -15.375;
     int exp = getFltExp(f);
     printf("exp of %f (less Bias) is %d\n", f, exp);     // prints 3
-
     f = 0;
     exp = getFltExp(f);
     printf("exp of %f (less Bias) is %d\n", f, exp);     // prints -127  --- wrong? but makes sense, it's not detecting denormalized I think
-
     f = 1;
     exp = getFltExp(f);
     printf("exp of %f (less Bias) is %d\n", f, exp);     // prints 0, expected
 
+    f = -15.375;
+    char* mantissaBitString = getFltManAsStr(f);
+    printf("mantissa bits are %s\n", mantissaBitString);
+    free(mantissaBitString);
 
+    float mantissa = getFltMan(f);
+    printf("mantissa standalone float is %f\n", mantissa);      // WANT : 0.9218750000
 
     return 0;
 }
