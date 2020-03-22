@@ -4,8 +4,8 @@
 #include <float.h>
 #include <stdlib.h>     // required for malloc()
 
-#define NORMALIZED 0        // but... should be 1
-#define DENORMALIZED 1      // but... should be 0   // email prof? maybe not.
+#define NORMALIZED 0
+#define DENORMALIZED 1
 #define SPECIAL 2
 #define BIAS 127
 
@@ -29,7 +29,7 @@
 typedef struct {
     int sign;
     int exp;
-    int mant;
+    float mant;
     int mode;
 } flt;
 
@@ -44,7 +44,7 @@ char getFltSignAsChar(float f) {        // Write a function that returns the sig
     return (bits & 1) ? '1' : '0';      // function should accept a float and return a string.
 }
 
-char getFltSignAsInt(float f) {         // Write a function that returns the sign of a float as an integer.
+char getFltSign(float f) {              // Write a function that returns the sign of a float as an integer.
     int bits = getFltBitsInt(f);        // You should call get_flt_bits_int to get the bits in an int
     bits >>= 31;                        // and return -1 if the sign is negative else return 1.  The function
     return (bits & 1) ? -1 : 1;         // should accept a float and return an int.
@@ -69,7 +69,7 @@ char* getFltExpStr(float f) {
 }
 
 int getFltExp(float f) {
-    char* expStr = getFltExpStr(f);       // Write a function to return an integer containing the
+    char* expStr = getFltExpStr(f);             // Write a function to return an integer containing the
     int exp = 0;                                // actual integer value of the exponent of a float.  You
     int place = 1;                              // should call get_flt_bits_int to get the bits in an int
     int i = 7;                                  // and return the int with the exponent value.
@@ -79,22 +79,20 @@ int getFltExp(float f) {
         i--;                                    //         the exponent bits are 10000010
     }                                           //         the actual value of the exponent is 3
     free(expStr);                               // The function should accept a float and return an int.
-    exp -= BIAS;
     return exp;
 }
 
-int getExpMode(float f) {           
-    int exp = getFltExp(f);             // Write a function to return an integer containing the
-    // int mantissa = getFltMan(f);        // mode of the exponent of a float.  You should call
+int getExpMode(float f) {               // Write a function to return an integer containing the
+    int exp = getFltExp(f);             // mode of the exponent of a float.  You should call
     int expMode;                        // get_flt_exp_val to get the bits in an int and return
-    if (exp == -127)                    // the int with the mode value.
+    if (exp == 0)                       // the int with the mode value.
         expMode = DENORMALIZED;         // Example:
-    if (exp ==  128) // && mantissa     //     for f = -15.375
-        expMode = SPECIAL;              //         n = 11000001011101100000000000000000
-    else                                //         the exponent bits are 10000010
-        expMode = NORMALIZED;           //         the mode is NORM
-    return expMode;                     // The function should accept a float and return an int.
-}
+    if (exp == 255)                     //     for f = -15.375
+        expMode = SPECIAL;              
+    else                                //         n = 11000001011101100000000000000000
+        expMode = NORMALIZED;           //         the exponent bits are 10000010
+    return expMode;                     //         the mode is NORM
+}                                       // The function should accept a float and return an int.
 
 char* getFltManStr(float f) {         
     char* manStr = malloc(24);          // Write a function to return a string containing the
@@ -115,7 +113,7 @@ char* getFltManStr(float f) {
 }
 
 float getFltMan(float f) {
-    char* manStr = getFltManStr(f);       // Write a function to return a float containing the
+    char* manStr = getFltManStr(f);         // Write a function to return a float containing the
     float man = 0;                          // actual float value of the mantissa of a float.  You
     float place = 0.5;                      // should call get_flt_bits_int to get the bits in an int
     int i = 0;                              // and return the int with the mantissa value.
@@ -149,8 +147,6 @@ char* getFltBitString(float f) {
     return bitStr;
 }
 
-
-
 /*
     Write a function to separate the parts of a float
     into a flt struct as described above.  You should
@@ -159,18 +155,36 @@ char* getFltBitString(float f) {
     Hint:  make sure to set exponent to -126 for
     DNORM mode.
 */
+flt assembleFlt(float f) {
+    int sign = getFltSign(f);
+    int exp = getFltExp(f);
+    float mantissa = getFltMan(f);
+    int mode = getExpMode(f);
 
+    if (mode == DENORMALIZED) {
+        exp = -126;
+    }
+    else if (mode == NORMALIZED) {
+        exp -= BIAS;
+    }
 
-
+    flt fl = { sign, exp, mantissa, mode };
+    return fl;
+}
 
 /*
     Write a function to print a flt struct to screen.
     It should accept a flt struct and return nothing.
     Hint: Use if statement to print mode.
 */
-
-
-
+void printFlt(flt fl) {
+    printf("flt.sign is %d\n", fl.sign);
+    printf("flt.exp is %d\n", fl.exp);
+    printf("flt.mant is %f\n", fl.mant);
+    if (fl.mode == 0) printf("flt.mode is Normalized\n");
+    if (fl.mode == 1) printf("flt.mode is Denormalized\n");
+    if (fl.mode == 2) printf("flt.mode is Special\n");
+}
 
 /*
     Write a function to get the actual float value back
@@ -182,7 +196,20 @@ char* getFltBitString(float f) {
         Check the slides and text for conditions for NORN, DNORM and SPEC
         You need to return (sign) * M * 2^e
 */
-
+float Flt_to_float(flt fl) {
+    // if (mode == DENORMALIZED) {
+    //     exp = -126;
+    // }
+    // else if (mode == SPECIAL) {  // i.e. exp==255
+    //     if (mantissa == 0)
+    //         f = INFINITY;   // float is infinity
+    //     else
+    //         f = NAN;        // float is Not-a-Number
+    // }
+    // else if (mode == NORMALIZED) {
+    //     exp -= BIAS;
+    // }
+}
 
 
 
@@ -190,21 +217,19 @@ char* getFltBitString(float f) {
     Write a main function that calls an prints results for
     each function when completed.
 
-    get_flt_bits_str
-
     get_flt_val_flt
     print_flt
 
     get_flt_bits_val
 */
-int main(){
+int main() {
     printf("float f is -15.375\n#########################\n");
     float f = -15.375;
     int bits = getFltBitsInt(f);
     printf("bits: as int is decimal %d, or hex 0x%X\n", bits, bits);
 
     char c = getFltSignAsChar(f);
-    int sign = getFltSignAsInt(f);
+    int sign = getFltSign(f);
     printf("signs: char sign returns %c and int sign returns %d\n", c, sign);
 
     char* str = getFltExpStr(f);
