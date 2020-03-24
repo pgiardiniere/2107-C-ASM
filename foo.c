@@ -59,20 +59,20 @@ void write_car(Car cars[], int count, char* filename) {
     int i = 0;
     while (i < count) {
         c = cars[i];
-        fprintf("ID:%d\n", c.id);
-        fprintf("Make:%s\n", c.make);
-        fprintf("Model:%s\n", c.model);
-        fprintf("Year:%d\n", c.year);
-        fprintf("Price:%f\n", c.price);
-        fprintf("Odometer:%d\n", c.odom);
+        fprintf(file, "ID:%d\n", c.id);
+        fprintf(file, "Make:%s\n", c.make);
+        fprintf(file, "Model:%s\n", c.model);
+        fprintf(file, "Year:%d\n", c.year);
+        fprintf(file, "Price:%fl\n", c.price);
+        fprintf(file, "Odometer:%d\n", c.odom);
         i++;
     }
     fclose(file);
 }
 
 int main() {
-    char inFile = "cars.csv";
-    char outFile = "cars.txt";
+    char* inFile = "cars.csv";
+    char* outFile = "cars.txt";
     int count = 3;
 
     Car* cars = read_car(inFile, &count);
