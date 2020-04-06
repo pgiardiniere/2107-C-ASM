@@ -132,20 +132,6 @@ int main()
     insert(&v4, 8.0);
     insert(&v4, 10.0);
 
-    int j = dbl_equals(4.0, 6.0);
-    printf("4.00 == 6.00 ? %d\n", j);
-    j = dbl_equals(5.0, 6.0);
-    printf("5.00 == 6.00 ? %d\n", j);
-    j = dbl_equals(6.0, 6.0);
-    printf("6.00 == 6.00 ? %d\n", j);
-    j = dbl_equals(6.1, 6.0);
-    printf("6.10 == 6.00 ? %d\n", j);
-    j = dbl_equals(6.01, 6.0);
-    printf("6.01 == 6.00 ? %d\n", j);
-    j = dbl_equals(6.001, 6.0);
-    printf("6.001 == 6.00 ? %d\n", j);
-
-
     // Test swap, sort, reverse and search
     printf("Test swap, sort, reverse and search\n");
     swap(&v1, 0, 4);
@@ -158,9 +144,9 @@ int main()
     int i = search(v4, 6.0);
     printf("Found at %d\n\n", i);
 
-    // // Test sum, avg, var and stdv
-    // printf("Test sum, avg, var and stdv\n");
-    // printf("Sum = %f\n", sum(v4));
+    // Test sum, avg, var and stdv
+    printf("Test sum, avg, var and stdv\n");
+    printf("Sum = %f\n", sum(v4));
     // printf("Avg = %f\n", avg(v4));
     // printf("Var = %f\n", var(v4));
     // printf("Stdv = %f\n\n", stdv(v4));
@@ -207,7 +193,6 @@ int main()
     vector, the count (initialized to zero) of doubles
     inserted, and the allocated vector.
 */
-
 Vector create_vector(int length)
 {
     double* ptr = (double*) malloc(sizeof(double) * length);
@@ -259,9 +244,7 @@ int insert(Vector *v, double dbl)
 }
 
 
-/*
-    Prints the count, length and elements of a vector to screen.
-*/
+//  Prints the count, length and elements of a vector to screen.
 void print_vec(Vector v)
 {
     printf("Vector.length is %d\n", v.length);
@@ -273,6 +256,7 @@ void print_vec(Vector v)
     }
     printf("]\n\n");
 }
+
 
 void print_min(Vector v)
 {
@@ -530,7 +514,13 @@ int search(Vector v, double dbl)
 // Calculate and return the sum of the elements in a vector.
 double sum(Vector v)
 {
-
+    double result = 0.0;
+    int i = 0;
+    while ( i < v.count) {
+        result += v.vector[i];
+        i++;
+    }
+    return result;
 }
 
 
