@@ -132,6 +132,20 @@ int main()
     insert(&v4, 8.0);
     insert(&v4, 10.0);
 
+    int j = dbl_equals(4.0, 6.0);
+    printf("4.00 == 6.00 ? %d\n", j);
+    j = dbl_equals(5.0, 6.0);
+    printf("5.00 == 6.00 ? %d\n", j);
+    j = dbl_equals(6.0, 6.0);
+    printf("6.00 == 6.00 ? %d\n", j);
+    j = dbl_equals(6.1, 6.0);
+    printf("6.10 == 6.00 ? %d\n", j);
+    j = dbl_equals(6.01, 6.0);
+    printf("6.01 == 6.00 ? %d\n", j);
+    j = dbl_equals(6.001, 6.0);
+    printf("6.001 == 6.00 ? %d\n", j);
+
+
     // Test swap, sort, reverse and search
     printf("Test swap, sort, reverse and search\n");
     swap(&v1, 0, 4);
@@ -141,8 +155,8 @@ int main()
     print_min(v1);
     reverse(&v4);
     print_min(v4);
-    // int i = search(v4, 6.0);
-    // printf("Found at %d\n\n", i);
+    int i = search(v4, 6.0);
+    printf("Found at %d\n\n", i);
 
     // // Test sum, avg, var and stdv
     // printf("Test sum, avg, var and stdv\n");
@@ -482,7 +496,7 @@ void reverse(Vector *v)
 // Checks if two doubles are equal given the defined EPSILON == 0.01
 int dbl_equals(double d1, double d2)
 {
-    if ( round(d1 * 100) - round(d2 * 100) < EPSILON * 100) {
+    if ( round(d1 * 100) * EPSILON == round(d2 * 100) * EPSILON) {
         return 1;
     }
     return 0;
@@ -493,9 +507,24 @@ int dbl_equals(double d1, double d2)
 //  the index of the element if found and -1 if not found.
 int search(Vector v, double dbl)
 {
-
+    int left = 0;
+    int right = v.count-1;
+    int mid;
+    // While we haven't crossed indices, check midpoint halfway between edges
+    while (left <= right) {
+        mid = left + (right - left) / 2;
+        if (dbl_equals(v.vector[mid], dbl)) {
+            return mid;
+        }
+        if (v.vector[mid] > dbl) {
+            left = mid + 1;
+        }
+        if (v.vector[mid] < dbl) {
+            right = mid - 1;
+        }
+    }
+    return -1;
 }
-
 
 
 // Calculate and return the sum of the elements in a vector.
