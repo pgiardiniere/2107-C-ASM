@@ -147,9 +147,9 @@ int main()
     // Test sum, avg, var and stdv
     printf("Test sum, avg, var and stdv\n");
     printf("Sum = %f\n", sum(v4));
-    // printf("Avg = %f\n", avg(v4));
-    // printf("Var = %f\n", var(v4));
-    // printf("Stdv = %f\n\n", stdv(v4));
+    printf("Avg = %f\n", avg(v4));
+    printf("Var = %f\n", var(v4));
+    printf("Stdv = %f\n\n", stdv(v4));
 
     // // Test add, sub, mul, divv, dot and equals
     // printf("Test add, sub, mul, divv, dot and equals\n");
@@ -524,17 +524,24 @@ double sum(Vector v)
 }
 
 
-
 // Calculate and return the average of the elements in a vector.
 double avg(Vector v)
 {
-
+    double sigma = sum(v);
+    return sigma / v.count;    
 }
 
 
 // Calculate and return the variance of the elements in a vector.
 double var(Vector v)
 {
+    Vector temp = create_vector(v.length);
+    double sum;
+    double mean = avg(v);
+    int i = 0;
+    while (i < v.count) {
+        // insert(  );
+    }
 
 }
 
@@ -542,7 +549,7 @@ double var(Vector v)
 // Calculate and return the standard deviation of the elements in a vector.
 double stdv(Vector v)
 {
-
+    return sqrt(var(v));
 }
 
 
