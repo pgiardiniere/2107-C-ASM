@@ -125,15 +125,22 @@ int main()
     // print_vec(v5);
     // printf("\n");
 
-    // // Test swap, sort, reverse and search
-    // printf("Test swap, sort, reverse and search\n");
-    // swap(&v1, 0, 4);
-    // swap(&v1, 1, 3);
-    // print_vec(v1);
-    // sort(&v1);
-    // print_vec(v1);
-    // reverse(&v4);
-    // print_vec(v4);
+    Vector v4 = create_vector(2);
+    insert(&v4, 2.0);
+    insert(&v4, 4.0);
+    insert(&v4, 6.0);
+    insert(&v4, 8.0);
+    insert(&v4, 10.0);
+
+    // Test swap, sort, reverse and search
+    printf("Test swap, sort, reverse and search\n");
+    swap(&v1, 0, 4);
+    swap(&v1, 1, 3);
+    print_min(v1);
+    sort(&v1);
+    print_min(v1);
+    reverse(&v4);
+    print_min(v4);
     // int i = search(v4, 6.0);
     // printf("Found at %d\n\n", i);
 
@@ -165,7 +172,7 @@ int main()
     delete_vector(&v1);
     delete_vector(&v2);
     delete_vector(&v3);
-    // delete_vector(&v4);
+    delete_vector(&v4);
     // delete_vector(&v5);
     // delete_vector(&v6);
     // delete_vector(&v7);
@@ -328,9 +335,7 @@ Vector copy_range(Vector v1, int from, int to)
 }
 
 
-/*
-    Writes zeros to the elements of a vector and set count to zero.
-*/
+// Writes zeros to the elements of a vector and sets count to zero.
 void clear_vector(Vector *v)
 {
     printf("clear_vector()\n");
@@ -344,9 +349,7 @@ void clear_vector(Vector *v)
 }
 
 
-/*
-    Writes zeros to a vector's elements.
-*/
+// Writes zeros to a vector's elements.
 void zeros(Vector *v)
 {
     printf("zeros()\n");
@@ -359,9 +362,8 @@ void zeros(Vector *v)
 }
 
 
-/*
-    Fills a vector's elements with the value in dbl.
-*/
+
+// Writes a double to a vector's elements.
 void fill(Vector *v, double dbl)
 {
     printf("fill()\n");
@@ -374,15 +376,27 @@ void fill(Vector *v, double dbl)
 }
 
 
-/*
-    Reads a vector from a file with one double on
-    each line in the file and returns the vector.
-    Remember that scanf returns a -1 after reading
-    the last element in a file.
-*/
+
+//  Reads a vector from a file with one double on
+//  each line in the file and returns the vector.
+//  Remember that scanf returns a -1 after reading
+//  the last element in a file.
 Vector read_from_file(char *filename)
 {
+    FILE * file = fopen("array_in.txt", "r");
+    if (file == NULL) { 
+        perror("Error : ");
+        exit(-1);
+    }
+    // Get length from file
 
+    
+    // int i = 0;
+    // while (i != -1) {
+    //     // i = fscanf();
+    // }
+
+    fclose(file);
 }
 
 
@@ -396,97 +410,121 @@ Vector read_from_file(char *filename)
 /*
     Creates a new vector and gets the elements from
     keyboard input.  Accepts and inserts doubles into
-    the vector until Enter is pressed (without any other
-    chars).  Remember that scanf will not work unless a
-    required data type is entered.  You should use gets
-    and check for '\0', when Enter only is pressed.
+    the vector until Enter is pressed 
+    (without any other chars).  
+    
+    Remember that scanf will not work unless a
+    required data type is entered.
+    You should use gets and check for '\0', when Enter only is pressed.
 */
-//Vector get_from_con(){
-//}
+Vector get_from_con()
+{
+
+}
 
 
 /*
     Adds elements to a vector and gets the elements from
     keyboard input.  Accepts and inserts doubles into
     the vector until Enter is pressed (without any other
-    chars).  Remember that scanf will not work unless a
-    required data type is entered.  You should use gets
+    chars). Remember that scanf will not work unless a
+    required data type is entered. You should use gets
     and check for '\0', when Enter only is pressed.
 */
-//void add_from_con(Vector *vec){
-//}
+void add_from_con(Vector *vec)
+{
+
+}
 
 
-/*
-    Swaps two elements in a vector.
-*/
-//void swap(Vector *vec, int i, int j){
-//}
+// Swaps two elements in a vector.
+void swap(Vector *v, int i, int j)
+{
+    double temp = (*v).vector[i];
+    (*v).vector[i] = (*v).vector[j];
+    (*v).vector[j] = temp;
+}
 
 
-/*
-    Sorts a vector.  Can use selection or bubble
-    sort.
-*/
-//void sort(Vector *vec){
-//}
+// Sorts a vector using selection sort. Linearly probes all indices,
+// getting smallest val to swap into position.
+void sort(Vector *v)
+{
+    int i, j, minInd;
+    for (i = 0; i < (*v).count-1; i++) {
+        minInd = i;
+        for (j = i+1; j < (*v).count; j++) {
+            if ( (*v).vector[j] < (*v).vector[minInd] ) {
+                minInd = j;
+            }
+        }
+        if (minInd != i) {
+            swap(v, i, minInd);
+        }
+    }
+}
 
 
-/*
-    Reverses the elements of a vector.
-*/
-//void reverse(Vector *vec){
-//}
+// Reverses the elements of a vector.
+void reverse(Vector *v)
+{
+    double temp;
+    int i = 0;
+    int j = (*v).count - 1;
+    while (i < j) {
+        swap(v, i, j);
+        i++;
+        j--;
+    }
+}
 
 
-/*
-    Checks if two doubles are equal given the defined
-    EPSILON.  Remember that there should be a threshold
-    for which two do floating point values are considered
-    equal due to computation of arithmetic operations.
-*/
-//int dbl_equals(double d1, double d2){
-//}
+// Checks if two doubles are equal given the defined EPSILON == 0.01
+int dbl_equals(double d1, double d2)
+{
+    if ( round(d1 * 100) - round(d2 * 100) < EPSILON * 100) {
+        return 1;
+    }
+    return 0;
+}
 
 
-/*
-    Perform a binary search on a sorted vector and return
-    the index of the element if found and -1 if not found.
-*/
-//int search(Vector vec, double dbl){
-//}
+//  Perform a binary search on a sorted vector and return
+//  the index of the element if found and -1 if not found.
+int search(Vector v, double dbl)
+{
+
+}
 
 
-/*
-    Calculate and return the sum of the elements in
-    a vector.
-*/
-//double sum(Vector vec){
-//}
+
+// Calculate and return the sum of the elements in a vector.
+double sum(Vector v)
+{
+
+}
 
 
-/*
-    Calculate and return the average of the elements in
-    a vector.
-*/
-//double avg(Vector vec){
-//}
+
+// Calculate and return the average of the elements in a vector.
+double avg(Vector v)
+{
+
+}
 
 
-/*
-    Calculate and return the variance of the elements in
-    a vector.
-*/
-//double var(Vector vec){
-//}
+// Calculate and return the variance of the elements in a vector.
+double var(Vector v)
+{
+
+}
 
 
-/*
-    Calculate and return the standard deviation of the
-    elements in a vector.
-*/
-//double stdv(Vector vec){
-//}
+// Calculate and return the standard deviation of the elements in a vector.
+double stdv(Vector v)
+{
+
+}
 
 
 
