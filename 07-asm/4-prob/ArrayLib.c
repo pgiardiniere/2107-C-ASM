@@ -154,19 +154,26 @@ int main()
     // Test add, sub, mul, divv, dot and equals
     printf("Test add, sub, mul, divv, dot and equals\n");
     Vector v6 = add(v1, v4);
-    print_vec(v6);
-    // Vector v7 = sub(v6, v4);
-    // print_vec(v7);
-    // Vector v8 = mul(v1, v4);
-    // print_vec(v8);
-    // Vector v9 = divv(v8, v4);
-    // print_vec(v9);
-    // double dbl = dot(v1, v4);
-    // printf("Dot = %f\n", dbl);
-    // i = equals(v1, v4);
-    // printf("Equals = %d\n", i);
-    // i = equals(v1, v1);
-    // printf("Equals = %d\n", i);
+    printf("   "); print_min(v1); printf(" + "); print_min(v4);
+    print_min(v6);
+    Vector v7 = sub(v6, v4);
+    printf("   "); print_min(v6); printf(" - "); print_min(v4);
+    print_min(v7);
+    Vector v8 = mul(v1, v4);
+    printf("   "); print_min(v1); printf(" * "); print_min(v4);
+    print_min(v8);
+    Vector v9 = divv(v8, v4);
+    printf("   "); print_min(v8); printf(" / "); print_min(v4);
+    print_min(v9);
+    double dbl = dot(v1, v4);
+    printf("   "); print_min(v1); printf(" . "); print_min(v4);
+    printf("Dot = %f\n", dbl);
+    i = equals(v1, v4);
+    printf("    "); print_min(v1); printf(" == "); print_min(v4);
+    printf("Equals = %d\n", i);
+    i = equals(v1, v1);
+    printf("    "); print_min(v1); printf(" == "); print_min(v1);
+    printf("Equals = %d\n", i);
 
     // Free memory
     delete_vector(&v1);
@@ -175,9 +182,9 @@ int main()
     delete_vector(&v4);
     // delete_vector(&v5);
     delete_vector(&v6);
-    // delete_vector(&v7);
-    // delete_vector(&v8);
-    // delete_vector(&v9);
+    delete_vector(&v7);
+    delete_vector(&v8);
+    delete_vector(&v9);
 
     return 0;
 }
@@ -584,7 +591,14 @@ Vector add(Vector v1, Vector v2)
 */
 Vector sub(Vector v1, Vector v2)
 {
-
+    if (v1.count != v2.count)
+        return empty_vector();
+    Vector v3 = create_vector(v1.count);
+    int i;
+    for (i = 0; i < v1.count; i++) {
+        insert(&v3, v1.vector[i] - v2.vector[i]);
+    }
+    return v3;
 }
 
 
@@ -593,8 +607,17 @@ Vector sub(Vector v1, Vector v2)
     where v3[i] = v1[i] * v2[i] and return the resulting
     vector.
 */
-//Vector mul(Vector v1, Vector v2){
-//}
+Vector mul(Vector v1, Vector v2)
+{
+    if (v1.count != v2.count)
+        return empty_vector();
+    Vector v3 = create_vector(v1.count);
+    int i;
+    for (i = 0; i < v1.count; i++) {
+        insert(&v3, v1.vector[i] * v2.vector[i]);
+    }
+    return v3;
+}
 
 
 /*
@@ -602,8 +625,17 @@ Vector sub(Vector v1, Vector v2)
     where v3[i] = v1[i] / v2[i] and return the resulting
     vector.
 */
-//Vector divv(Vector v1, Vector v2){
-//}
+Vector divv(Vector v1, Vector v2)
+{
+    if (v1.count != v2.count)
+        return empty_vector();
+    Vector v3 = create_vector(v1.count);
+    int i;
+    for (i = 0; i < v1.count; i++) {
+        insert(&v3, v1.vector[i] / v2.vector[i]);
+    }
+    return v3;
+}
 
 
 /*
@@ -611,8 +643,19 @@ Vector sub(Vector v1, Vector v2)
     where dbl += v1[i] * v2[i] and return the resulting
     double.
 */
-//double dot(Vector v1, Vector v2){
-//}
+double dot(Vector v1, Vector v2)
+{
+    if (v1.count != v2.count) {
+        printf("Dimension mismatch - exiting");
+        exit(-1);
+    }
+    double dbl = 0;
+    int i;
+    for (i = 0; i < v1.count; i++) {
+        dbl += v1.vector[i] * v2.vector[i];
+    }
+    return dbl;
+}
 
 
 /*
@@ -620,5 +663,14 @@ Vector sub(Vector v1, Vector v2)
     If for every i, v1[i] == v2[i], and the count is equal
     return 1, otherwise zero.
 */
-//int equals(Vector v1, Vector v2){
-//}
+int equals(Vector v1, Vector v2)
+{
+    if (v1.count != v2.count)
+        return 0;
+    int i;
+    for (i = 0; i < v1.count; i++) {
+        if ( !dbl_equals(v1.vector[i], v2.vector[i]) )
+            return 0;
+    }
+    return 1;
+}
