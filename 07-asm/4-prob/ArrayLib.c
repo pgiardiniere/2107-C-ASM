@@ -85,7 +85,7 @@ int equals(Vector v1, Vector v2);
 int main()
 {
     // Test create, insert and print
-    printf("Test create, insert and print\n");
+    printf("\nTest create, insert and print\n####################\n");
     Vector v1 = create_vector(2);
     insert(&v1, 1.0);
     insert(&v1, 2.0);
@@ -93,22 +93,23 @@ int main()
     insert(&v1, 4.0);
     insert(&v1, 5.0);
     print_vec(v1);
+    printf("\n");
 
-    // // Test copy and copy range
-    // printf("Test copy and copy range\n");
-    // Vector v2 = copy(v1);
+    // Test copy and copy range
+    printf("Test copy and copy range\n####################\n");
+    Vector v2 = copy(v1);
     // print_vec(v2);
-    // Vector v3 = copy_range(v1, 1, 3);
+    Vector v3 = copy_range(v1, 1, 3);
     // print_vec(v3);
-    // printf("\n");
+    printf("\n");
 
-    // // Test zeros and fill
-    // printf("Test zeros and fill\n");
-    // zeros(&v3);
+    // Test zeros and fill
+    printf("Test zeros and fill\n####################\n");
+    zeros(&v3);
     // print_vec(v3);
-    // fill(&v2, 1.0);
+    fill(&v2, 1.0);
     // print_vec(v2);
-    // printf("\n");
+    printf("\n");
 
     // // Test read and write
     // printf("Test read and write\n");
@@ -160,12 +161,10 @@ int main()
     // i = equals(v1, v1);
     // printf("Equals = %d\n", i);
 
-    // // Free memory
-    print_min(v1);
+    // Free memory
     delete_vector(&v1);
-    print_min(v1);
-    // delete_vector(&v2);
-    // delete_vector(&v3);
+    delete_vector(&v2);
+    delete_vector(&v3);
     // delete_vector(&v4);
     // delete_vector(&v5);
     // delete_vector(&v6);
@@ -225,7 +224,6 @@ Vector empty_vector()
 */
 int insert(Vector *v, double dbl)
 {
-    printf("  Inserting %.2lf\n", dbl);
     // Reallocate if vector is full
     if (v->count == v->length) {
         (*v).length = 2 * v->length;
@@ -257,7 +255,7 @@ void print_vec(Vector v)
 
 void print_min(Vector v)
 {
-    printf("v has [ ");
+    printf(" [ ");
     int i;
     for (i = 0; i < v.count; i++) {
         printf("%.2lf, ", v.vector[i]);
@@ -286,8 +284,17 @@ void delete_vector(Vector *v)
     Creates a new vector with equal count, length and
     elements and returns the vector.
 */
-//Vector copy(Vector vec){
-//}
+Vector copy(Vector v1)
+{
+    Vector v2 = create_vector(v1.length);
+    int i;
+    for (i = 0; i < v1.count; i++) {
+        insert( &v2, v1.vector[i] );
+    }
+    printf("v1 has"); print_min(v1);
+    printf("v2 has"); print_min(v2);
+    return v2;
+}
 
 
 /*
@@ -298,31 +305,73 @@ void delete_vector(Vector *v)
         to less than from
         to less than zero
         from greater than or equal to count
+
+        to greater than or equal to count
+        is my addition, because checking array bounds is A Good Thing.
 */
-//Vector copy_range(Vector vec, int from, int to){
-//}
+Vector copy_range(Vector v1, int from, int to)
+{
+    // Check that range is valid.
+    if (to < from || to < 0 || from >= v1.count || to >= v1.count) {
+        printf("copy_range() error - you entered an invalid range\n\n");
+        exit(-1);
+    }
+    // Copy the range from v1 into v2.
+    Vector v2 = create_vector(v1.count);
+    int i;
+    for (i = from; i < to; i++) {
+        insert( &v2, v1.vector[i] );
+    }
+    printf("v1 has"); print_min(v1);
+    printf("v3 has"); print_min(v2);
+    return v2;
+}
 
 
 /*
-    Writes zeros to the elements of a vector and sets
-    the count to zero.
+    Writes zeros to the elements of a vector and set count to zero.
 */
-//void clear_vector(Vector *vec){
-//}
+void clear_vector(Vector *v)
+{
+    printf("clear_vector()\n");
+    print_min(*v);
+    int i;
+    for (i = 0; i < (*v).count; i++) {
+        (*v).vector[i] = (double) 0;
+    }
+    (*v).count = 0;
+    print_min(*v);
+}
 
 
 /*
     Writes zeros to a vector's elements.
 */
-//void zeros(Vector *vec){
-//}
+void zeros(Vector *v)
+{
+    printf("zeros()\n");
+    print_min(*v);
+    int i;
+    for (i = 0; i < (*v).count; i++) {
+        (*v).vector[i] = (double) 0;
+    }
+    print_min(*v);
+}
 
 
 /*
     Fills a vector's elements with the value in dbl.
 */
-//void fill(Vector *vec, double dbl){
-//}
+void fill(Vector *v, double dbl)
+{
+    printf("fill()\n");
+    print_min(*v);
+    int i;
+    for (i = 0; i < (*v).count; i++) {
+        (*v).vector[i] = dbl;
+    }
+    print_min(*v);
+}
 
 
 /*
@@ -331,8 +380,10 @@ void delete_vector(Vector *v)
     Remember that scanf returns a -1 after reading
     the last element in a file.
 */
-//Vector read_from_file(char *filename){
-//}
+Vector read_from_file(char *filename)
+{
+
+}
 
 
 /*
