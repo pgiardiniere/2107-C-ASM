@@ -119,73 +119,66 @@ int main()
     write_to_file(v1, "array_out.txt");
     printf("\n");
 
-    // // Test get from con and add from con
-    // Vector v5 = get_from_con();
-    // print_vec(v5);
-    // add_from_con(&v5);
-    // print_vec(v5);
-    // printf("\n");
+    // Test get from con and add from con
+    Vector v5 = get_from_con();
+    print_vec(v5);
+    add_from_con(&v5);
+    print_vec(v5);
+    printf("\n");
 
-    // Vector v4 = create_vector(2);
-    // insert(&v4, 2.0);
-    // insert(&v4, 4.0);
-    // insert(&v4, 6.0);
-    // insert(&v4, 8.0);
-    // insert(&v4, 10.0);
+    // Test swap, sort, reverse and search
+    printf("Test swap, sort, reverse and search\n");
+    swap(&v1, 0, 4);
+    swap(&v1, 1, 3);
+    print_min(v1);
+    sort(&v1);
+    print_min(v1);
+    reverse(&v4);
+    print_min(v4);
+    int i = search(v4, 6.0);
+    printf("Found at %d\n\n", i);
 
-    // // Test swap, sort, reverse and search
-    // printf("Test swap, sort, reverse and search\n");
-    // swap(&v1, 0, 4);
-    // swap(&v1, 1, 3);
-    // print_min(v1);
-    // sort(&v1);
-    // print_min(v1);
-    // reverse(&v4);
-    // print_min(v4);
-    // int i = search(v4, 6.0);
-    // printf("Found at %d\n\n", i);
+    // Test sum, avg, var and stdv
+    printf("Test sum, avg, var and stdv\n");
+    printf("Sum = %f\n", sum(v4));
+    printf("Avg = %f\n", avg(v4));
+    printf("Var = %f\n", var(v4));
+    printf("Stdv = %f\n\n", stdv(v4));
 
-    // // Test sum, avg, var and stdv
-    // printf("Test sum, avg, var and stdv\n");
-    // printf("Sum = %f\n", sum(v4));
-    // printf("Avg = %f\n", avg(v4));
-    // printf("Var = %f\n", var(v4));
-    // printf("Stdv = %f\n\n", stdv(v4));
-
-    // // Test add, sub, mul, divv, dot and equals
-    // printf("Test add, sub, mul, divv, dot and equals\n");
-    // Vector v6 = add(v1, v4);
-    // printf("   "); print_min(v1); printf(" + "); print_min(v4);
-    // print_min(v6);
-    // Vector v7 = sub(v6, v4);
-    // printf("   "); print_min(v6); printf(" - "); print_min(v4);
-    // print_min(v7);
-    // Vector v8 = mul(v1, v4);
-    // printf("   "); print_min(v1); printf(" * "); print_min(v4);
-    // print_min(v8);
-    // Vector v9 = divv(v8, v4);
-    // printf("   "); print_min(v8); printf(" / "); print_min(v4);
-    // print_min(v9);
-    // double dbl = dot(v1, v4);
-    // printf("   "); print_min(v1); printf(" . "); print_min(v4);
-    // printf("Dot = %f\n", dbl);
-    // i = equals(v1, v4);
-    // printf("    "); print_min(v1); printf(" == "); print_min(v4);
-    // printf("Equals = %d\n", i);
-    // i = equals(v1, v1);
-    // printf("    "); print_min(v1); printf(" == "); print_min(v1);
-    // printf("Equals = %d\n", i);
+    // Test add, sub, mul, divv, dot and equals
+    printf("Test add, sub, mul, divv, dot and equals\n");
+    Vector v6 = add(v1, v4);
+    printf("   "); print_min(v1); printf(" + "); print_min(v4);
+    print_min(v6);
+    Vector v7 = sub(v6, v4);
+    printf("   "); print_min(v6); printf(" - "); print_min(v4);
+    print_min(v7);
+    Vector v8 = mul(v1, v4);
+    printf("   "); print_min(v1); printf(" * "); print_min(v4);
+    print_min(v8);
+    Vector v9 = divv(v8, v4);
+    printf("   "); print_min(v8); printf(" / "); print_min(v4);
+    print_min(v9);
+    double dbl = dot(v1, v4);
+    printf("   "); print_min(v1); printf(" . "); print_min(v4);
+    printf("Dot = %f\n", dbl);
+    i = equals(v1, v4);
+    printf("    "); print_min(v1); printf(" == "); print_min(v4);
+    printf("Equals = %d\n", i);
+    i = equals(v1, v1);
+    printf("    "); print_min(v1); printf(" == "); print_min(v1);
+    printf("Equals = %d\n", i);
 
     // Free memory
     delete_vector(&v1);
     delete_vector(&v2);
     delete_vector(&v3);
     delete_vector(&v4);
-    // delete_vector(&v5);
-    // delete_vector(&v6);
-    // delete_vector(&v7);
-    // delete_vector(&v8);
-    // delete_vector(&v9);
+    delete_vector(&v5);
+    delete_vector(&v6);
+    delete_vector(&v7);
+    delete_vector(&v8);
+    delete_vector(&v9);
 
     return 0;
 }
@@ -358,7 +351,6 @@ void clear_vector(Vector *v)
 // Writes zeros to a vector's elements.
 void zeros(Vector *v)
 {
-    printf("zeros()\n");
     print_min(*v);
     int i;
     for (i = 0; i < (*v).count; i++) {
@@ -372,7 +364,6 @@ void zeros(Vector *v)
 // Writes a double to a vector's elements.
 void fill(Vector *v, double dbl)
 {
-    printf("fill()\n");
     print_min(*v);
     int i;
     for (i = 0; i < (*v).count; i++) {
@@ -451,7 +442,27 @@ int write_to_file(Vector v, char *filename)
 */
 Vector get_from_con()
 {
+    printf("Enter your doubles, i.e. <numeric>.<numeric><Enter>\n");
+    printf("Hit enter a second time to exit, i.e. <Enter><Enter>\n");
+    double dbl = 1.0;
+    char in[255];    
+    
+    Vector v = create_vector(1);
+    fgets(in, 255, stdin);
+    in[strcspn(in, "\n")] = 0;
+    dbl = atof(in);
 
+    while (dbl != 0.0) {
+        insert(&v, dbl);
+        fgets(in, 255, stdin);
+        in[strcspn(in, "\n")] = 0;
+        dbl = atof(in);
+    }
+
+    if (v.count == 0)
+        return empty_vector();
+    else
+        return v;
 }
 
 
@@ -463,9 +474,23 @@ Vector get_from_con()
     required data type is entered. You should use gets
     and check for '\0', when Enter only is pressed.
 */
-void add_from_con(Vector *vec)
+void add_from_con(Vector *v)
 {
+    printf("Enter your doubles, i.e. <numeric>.<numeric><Enter>\n");
+    printf("Hit enter a second time to exit, i.e. <Enter><Enter>");
+    double dbl = 1.0;
+    char in[255];    
+    
+    fgets(in, 255, stdin);
+    in[strcspn(in, "\n")] = 0;
+    dbl = atof(in);
 
+    while (dbl != 0.0) {
+        insert(v, dbl);
+        fgets(in, 255, stdin);
+        in[strcspn(in, "\n")] = 0;
+        dbl = atof(in);
+    }
 }
 
 
