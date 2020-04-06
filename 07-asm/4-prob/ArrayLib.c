@@ -26,11 +26,13 @@
     deducted if you code can crash in any way.  So be sure to
     consider and handle all possible threats that may crash your
     application.
+        
+        i.e. Use:
+    if (ptr == NULL) {perror("Error : "); exit(-1); }
+    ... and possibly empty_vector() for good measure
 
     This code will be used in your final project to create static
     and dynamic libraries.
-
-    Good luck!
 */
 
 
@@ -40,22 +42,23 @@
     of the vector and and integer for the count of double
     inserted.
 */
-typedef struct{
+typedef struct {
     double *vector;
     int count;
     int length;
-}Vector;
+} Vector;
 
 
 // Prototypes
 Vector create_vector(int length);
-Vector empty_vector();
+Vector empty_vector();                      // Not called from main()
 int insert(Vector *vec, double dbl);
 void print_vec(Vector vec);
+void print_min(Vector vec);
 void delete_vector(Vector *vec);
 Vector copy(Vector vec);
 Vector copy_range(Vector vec, int from, int to);
-void clear_vector(Vector *vec);
+void clear_vector(Vector *vec);             // Not called from main()
 void zeros(Vector *vec);
 void fill(Vector *vec, double dbl);
 Vector read_from_file(char *filename);
@@ -65,7 +68,7 @@ void add_from_con(Vector *vec);
 void swap(Vector *vec, int i, int j);
 void sort(Vector *vec);
 void reverse(Vector *vec);
-int dbl_equals(double d1, double d2);
+int dbl_equals(double d1, double d2);       // Not called from main()
 int search(Vector vec, double dbl);
 double sum(Vector vec);
 double avg(Vector vec);
@@ -79,11 +82,10 @@ double dot(Vector v1, Vector v2);
 int equals(Vector v1, Vector v2);
 
 
-// Main
-int main(){
-
+int main()
+{
     // Test create, insert and print
-/*    printf("Test create, insert and print\n");
+    printf("Test create, insert and print\n");
     Vector v1 = create_vector(2);
     insert(&v1, 1.0);
     insert(&v1, 2.0);
@@ -91,93 +93,91 @@ int main(){
     insert(&v1, 4.0);
     insert(&v1, 5.0);
     print_vec(v1);
-    printf("\n");
 
-    // Test copy and copy range
-    printf("Test copy and copy range\n");
-    Vector v2 = copy(v1);
-    print_vec(v2);
-    Vector v3 = copy_range(v1, 1, 3);
-    print_vec(v3);
-    printf("\n");
+    // // Test copy and copy range
+    // printf("Test copy and copy range\n");
+    // Vector v2 = copy(v1);
+    // print_vec(v2);
+    // Vector v3 = copy_range(v1, 1, 3);
+    // print_vec(v3);
+    // printf("\n");
 
-    // Test zeros and fill
-    printf("Test zeros and fill\n");
-    zeros(&v3);
-    print_vec(v3);
-    fill(&v2, 1.0);
-    print_vec(v2);
-    printf("\n");
+    // // Test zeros and fill
+    // printf("Test zeros and fill\n");
+    // zeros(&v3);
+    // print_vec(v3);
+    // fill(&v2, 1.0);
+    // print_vec(v2);
+    // printf("\n");
 
-    // Test read and write
-    printf("Test read and write\n");
-    Vector v4 = read_from_file("array_in.txt");
-    print_vec(v4);
-    write_to_file(v1, "array_out.txt");
-    printf("\n");
+    // // Test read and write
+    // printf("Test read and write\n");
+    // Vector v4 = read_from_file("array_in.txt");
+    // print_vec(v4);
+    // write_to_file(v1, "array_out.txt");
+    // printf("\n");
 
-    // Test get from con and add from con
-    Vector v5 = get_from_con();
-    print_vec(v5);
-    add_from_con(&v5);
-    print_vec(v5);
-    printf("\n");
+    // // Test get from con and add from con
+    // Vector v5 = get_from_con();
+    // print_vec(v5);
+    // add_from_con(&v5);
+    // print_vec(v5);
+    // printf("\n");
 
-    // Test swap, sort, reverse and search
-    printf("Test swap, sort, reverse and search\n");
-    swap(&v1, 0, 4);
-    swap(&v1, 1, 3);
-    print_vec(v1);
-    sort(&v1);
-    print_vec(v1);
-    reverse(&v4);
-    print_vec(v4);
-    int i = search(v4, 6.0);
-    printf("Found at %d\n\n", i);
+    // // Test swap, sort, reverse and search
+    // printf("Test swap, sort, reverse and search\n");
+    // swap(&v1, 0, 4);
+    // swap(&v1, 1, 3);
+    // print_vec(v1);
+    // sort(&v1);
+    // print_vec(v1);
+    // reverse(&v4);
+    // print_vec(v4);
+    // int i = search(v4, 6.0);
+    // printf("Found at %d\n\n", i);
 
-    // Test sum, avg, var and stdv
-    printf("Test sum, avg, var and stdv\n");
-    printf("Sum = %f\n", sum(v4));
-    printf("Avg = %f\n", avg(v4));
-    printf("Var = %f\n", var(v4));
-    printf("Stdv = %f\n\n", stdv(v4));
+    // // Test sum, avg, var and stdv
+    // printf("Test sum, avg, var and stdv\n");
+    // printf("Sum = %f\n", sum(v4));
+    // printf("Avg = %f\n", avg(v4));
+    // printf("Var = %f\n", var(v4));
+    // printf("Stdv = %f\n\n", stdv(v4));
 
-    // Test add, sub, mul, divv, dot and equals
-    printf("Test add, sub, mul, divv, dot and equals\n");
-    Vector v6 = add(v1, v4);
-    print_vec(v6);
-    Vector v7 = sub(v6, v4);
-    print_vec(v7);
-    Vector v8 = mul(v1, v4);
-    print_vec(v8);
-    Vector v9 = divv(v8, v4);
-    print_vec(v9);
-    double dbl = dot(v1, v4);
-    printf("Dot = %f\n", dbl);
-    i = equals(v1, v4);
-    printf("Equals = %d\n", i);
-    i = equals(v1, v1);
-    printf("Equals = %d\n", i);
+    // // Test add, sub, mul, divv, dot and equals
+    // printf("Test add, sub, mul, divv, dot and equals\n");
+    // Vector v6 = add(v1, v4);
+    // print_vec(v6);
+    // Vector v7 = sub(v6, v4);
+    // print_vec(v7);
+    // Vector v8 = mul(v1, v4);
+    // print_vec(v8);
+    // Vector v9 = divv(v8, v4);
+    // print_vec(v9);
+    // double dbl = dot(v1, v4);
+    // printf("Dot = %f\n", dbl);
+    // i = equals(v1, v4);
+    // printf("Equals = %d\n", i);
+    // i = equals(v1, v1);
+    // printf("Equals = %d\n", i);
 
-    // Free memory
+    // // Free memory
+    print_min(v1);
     delete_vector(&v1);
-    delete_vector(&v2);
-    delete_vector(&v3);
-    delete_vector(&v4);
-    delete_vector(&v5);
-    delete_vector(&v6);
-    delete_vector(&v7);
-    delete_vector(&v8);
-    delete_vector(&v9);
-*/
+    print_min(v1);
+    // delete_vector(&v2);
+    // delete_vector(&v3);
+    // delete_vector(&v4);
+    // delete_vector(&v5);
+    // delete_vector(&v6);
+    // delete_vector(&v7);
+    // delete_vector(&v8);
+    // delete_vector(&v9);
 
     return 0;
 }
 
 /*
-
     Single vector functions
-
 */
 
 /*
@@ -187,9 +187,18 @@ int main(){
     vector, the count (initialized to zero) of doubles
     inserted, and the allocated vector.
 */
-//Vector create_vector(int length){
-//}
 
+Vector create_vector(int length)
+{
+    double* ptr = (double*) malloc(sizeof(double) * length);
+    if (ptr == NULL) {
+        printf("Warning: malloc() failure. Returning empty vector\n");
+        Vector v = empty_vector();
+        return v;
+    }
+    Vector v = {ptr, 0, length};
+    return v;
+}
 
 /*
     Create an empty vector with vector pointer set to NULL,
@@ -197,8 +206,11 @@ int main(){
     when something fails during the creation of a Vector or
     other functions that return a Vector.
 */
-//Vector empty_vector(){
-//}
+Vector empty_vector()
+{
+    Vector v = {NULL, 0, 0};
+    return v;
+}
 
 
 /*
@@ -207,19 +219,51 @@ int main(){
     the vector should be doubled and the data from the old
     vector should be copied and the old vector freed.  If
     the length is zero, use the defined initial size.
+    
     You can use malloc, which requires you to manually copy
     and free the old vector or try realloc.
 */
-//int insert(Vector *vec, double dbl){
-//}
+int insert(Vector *v, double dbl)
+{
+    printf("  Inserting %.2lf\n", dbl);
+    // Reallocate if vector is full
+    if (v->count == v->length) {
+        (*v).length = 2 * v->length;
+        (*v).vector = realloc( (*v).vector, sizeof(double)*v->length ); 
+        if ((*v).vector == NULL) {
+            perror("Error : "); exit(-1);
+        }
+    }
+    // Insert the double
+    (*v).vector[(*v).count] = dbl;
+    (*v).count++;
+}
 
 
 /*
-    Prints the count, length and elements of a vector to
-    screen.
+    Prints the count, length and elements of a vector to screen.
 */
-//void print_vec(Vector vec){
-//}
+void print_vec(Vector v)
+{
+    printf("Vector.length is %d\n", v.length);
+    printf("Vector.count is %d\n", v.count);
+    printf("Vector contents is [ ");
+    int i;
+    for (i = 0; i < v.count; i++) {
+        printf("%.2lf, ", v.vector[i]);
+    }
+    printf("]\n\n");
+}
+
+void print_min(Vector v)
+{
+    printf("v has [ ");
+    int i;
+    for (i = 0; i < v.count; i++) {
+        printf("%.2lf, ", v.vector[i]);
+    }
+    printf("]\n\n");
+}
 
 
 /*
@@ -227,8 +271,15 @@ int main(){
     the count and length to zero.  Make sure not the free
     an empty (NULL) vector.
 */
-//void delete_vector(Vector *vec){
-//}
+void delete_vector(Vector *v)
+{
+    if ((*v).vector == NULL) {
+        return;
+    }
+    free((*v).vector);
+    (*v).count = 0;
+    (*v).length = 0;
+}
 
 
 /*
@@ -446,6 +497,3 @@ int main(){
 */
 //int equals(Vector v1, Vector v2){
 //}
-
-
-
