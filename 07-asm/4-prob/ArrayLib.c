@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <float.h>
 #include <math.h>
+#include <string.h>
 
 #define INIT_SIZE 4
 #define EPSILON 0.01
@@ -51,14 +52,14 @@ typedef struct {
 
 // Prototypes
 Vector create_vector(int length);
-Vector empty_vector();                      // Not called from main()
+Vector empty_vector();
 int insert(Vector *vec, double dbl);
 void print_vec(Vector vec);
 void print_min(Vector vec);
 void delete_vector(Vector *vec);
 Vector copy(Vector vec);
 Vector copy_range(Vector vec, int from, int to);
-void clear_vector(Vector *vec);             // Not called from main()
+void clear_vector(Vector *vec);
 void zeros(Vector *vec);
 void fill(Vector *vec, double dbl);
 Vector read_from_file(char *filename);
@@ -68,7 +69,7 @@ void add_from_con(Vector *vec);
 void swap(Vector *vec, int i, int j);
 void sort(Vector *vec);
 void reverse(Vector *vec);
-int dbl_equals(double d1, double d2);       // Not called from main()
+int dbl_equals(double d1, double d2);
 int search(Vector vec, double dbl);
 double sum(Vector vec);
 double avg(Vector vec);
@@ -111,12 +112,12 @@ int main()
     // print_vec(v2);
     printf("\n");
 
-    // // Test read and write
-    // printf("Test read and write\n");
-    // Vector v4 = read_from_file("array_in.txt");
-    // print_vec(v4);
-    // write_to_file(v1, "array_out.txt");
-    // printf("\n");
+    // Test read and write
+    printf("Test read and write\n");
+    Vector v4 = read_from_file("array_in.txt");
+    print_vec(v4);
+    write_to_file(v1, "array_out.txt");
+    printf("\n");
 
     // // Test get from con and add from con
     // Vector v5 = get_from_con();
@@ -125,55 +126,55 @@ int main()
     // print_vec(v5);
     // printf("\n");
 
-    Vector v4 = create_vector(2);
-    insert(&v4, 2.0);
-    insert(&v4, 4.0);
-    insert(&v4, 6.0);
-    insert(&v4, 8.0);
-    insert(&v4, 10.0);
+    // Vector v4 = create_vector(2);
+    // insert(&v4, 2.0);
+    // insert(&v4, 4.0);
+    // insert(&v4, 6.0);
+    // insert(&v4, 8.0);
+    // insert(&v4, 10.0);
 
-    // Test swap, sort, reverse and search
-    printf("Test swap, sort, reverse and search\n");
-    swap(&v1, 0, 4);
-    swap(&v1, 1, 3);
-    print_min(v1);
-    sort(&v1);
-    print_min(v1);
-    reverse(&v4);
-    print_min(v4);
-    int i = search(v4, 6.0);
-    printf("Found at %d\n\n", i);
+    // // Test swap, sort, reverse and search
+    // printf("Test swap, sort, reverse and search\n");
+    // swap(&v1, 0, 4);
+    // swap(&v1, 1, 3);
+    // print_min(v1);
+    // sort(&v1);
+    // print_min(v1);
+    // reverse(&v4);
+    // print_min(v4);
+    // int i = search(v4, 6.0);
+    // printf("Found at %d\n\n", i);
 
-    // Test sum, avg, var and stdv
-    printf("Test sum, avg, var and stdv\n");
-    printf("Sum = %f\n", sum(v4));
-    printf("Avg = %f\n", avg(v4));
-    printf("Var = %f\n", var(v4));
-    printf("Stdv = %f\n\n", stdv(v4));
+    // // Test sum, avg, var and stdv
+    // printf("Test sum, avg, var and stdv\n");
+    // printf("Sum = %f\n", sum(v4));
+    // printf("Avg = %f\n", avg(v4));
+    // printf("Var = %f\n", var(v4));
+    // printf("Stdv = %f\n\n", stdv(v4));
 
-    // Test add, sub, mul, divv, dot and equals
-    printf("Test add, sub, mul, divv, dot and equals\n");
-    Vector v6 = add(v1, v4);
-    printf("   "); print_min(v1); printf(" + "); print_min(v4);
-    print_min(v6);
-    Vector v7 = sub(v6, v4);
-    printf("   "); print_min(v6); printf(" - "); print_min(v4);
-    print_min(v7);
-    Vector v8 = mul(v1, v4);
-    printf("   "); print_min(v1); printf(" * "); print_min(v4);
-    print_min(v8);
-    Vector v9 = divv(v8, v4);
-    printf("   "); print_min(v8); printf(" / "); print_min(v4);
-    print_min(v9);
-    double dbl = dot(v1, v4);
-    printf("   "); print_min(v1); printf(" . "); print_min(v4);
-    printf("Dot = %f\n", dbl);
-    i = equals(v1, v4);
-    printf("    "); print_min(v1); printf(" == "); print_min(v4);
-    printf("Equals = %d\n", i);
-    i = equals(v1, v1);
-    printf("    "); print_min(v1); printf(" == "); print_min(v1);
-    printf("Equals = %d\n", i);
+    // // Test add, sub, mul, divv, dot and equals
+    // printf("Test add, sub, mul, divv, dot and equals\n");
+    // Vector v6 = add(v1, v4);
+    // printf("   "); print_min(v1); printf(" + "); print_min(v4);
+    // print_min(v6);
+    // Vector v7 = sub(v6, v4);
+    // printf("   "); print_min(v6); printf(" - "); print_min(v4);
+    // print_min(v7);
+    // Vector v8 = mul(v1, v4);
+    // printf("   "); print_min(v1); printf(" * "); print_min(v4);
+    // print_min(v8);
+    // Vector v9 = divv(v8, v4);
+    // printf("   "); print_min(v8); printf(" / "); print_min(v4);
+    // print_min(v9);
+    // double dbl = dot(v1, v4);
+    // printf("   "); print_min(v1); printf(" . "); print_min(v4);
+    // printf("Dot = %f\n", dbl);
+    // i = equals(v1, v4);
+    // printf("    "); print_min(v1); printf(" == "); print_min(v4);
+    // printf("Equals = %d\n", i);
+    // i = equals(v1, v1);
+    // printf("    "); print_min(v1); printf(" == "); print_min(v1);
+    // printf("Equals = %d\n", i);
 
     // Free memory
     delete_vector(&v1);
@@ -181,10 +182,10 @@ int main()
     delete_vector(&v3);
     delete_vector(&v4);
     // delete_vector(&v5);
-    delete_vector(&v6);
-    delete_vector(&v7);
-    delete_vector(&v8);
-    delete_vector(&v9);
+    // delete_vector(&v6);
+    // delete_vector(&v7);
+    // delete_vector(&v8);
+    // delete_vector(&v9);
 
     return 0;
 }
@@ -393,23 +394,49 @@ Vector read_from_file(char *filename)
         perror("Error : ");
         exit(-1);
     }
-    // Get length from file
+    // Count lines in file in i, that is our num of doubles.
+    int i = 0;
+    char str[255];    
+    while (fgets(str, 255, file) != NULL) {
+        i++;
+    }
+    rewind(file);
 
-    
-    // int i = 0;
-    // while (i != -1) {
-    //     // i = fscanf();
-    // }
+    if (i == 0) {
+        fclose(file);
+        return empty_vector();
+    }
 
+    Vector v = create_vector(i);
+    double temp;
+    for (i = 0; i < v.length; i++) {
+        fscanf(file, "%lf", &temp);
+        insert(&v, temp);
+    }
     fclose(file);
+    return v;
 }
 
 
 /*
     Writes a vector's elements to a file.
 */
-//int write_to_file(Vector vec, char *filename){
-//}
+int write_to_file(Vector v, char *filename)
+{
+    FILE * file = fopen("array_out.txt", "w");
+    if (file == NULL) { 
+        perror("Error : ");
+        exit(-1);
+    }
+    int i = 0;
+    while (i < v.count) {
+        fprintf(file, "%.2lf\n", v.vector[i]);
+        i++;
+    }
+    fclose(file);
+    return 0;
+
+}
 
 
 /*
