@@ -7,42 +7,6 @@
 #define INIT_SIZE 4
 #define EPSILON 0.01
 
-/*
-    This lab requires you to write functions that manage
-    and process double precision data vectors.  The includes,
-    defines, Vector struct, function prototypes, skeleton
-    functions and test code in main have been included to
-    get you started.
-
-    I suggest writing the functions in order
-    of appearance below because some functions, either directly
-    or indirectly depend on others.  You have to create a vector
-    and insert elements before printing a vector.  The sum function
-    can be used in avg, avg can be used in var and var in stdv.  The
-    dbl_equals function should be used to compare doubles within a
-    threshold to account for arithmetic precision errors on doubles.
-
-    Make sure that you check that file open and memory allocation
-    is successful before using the file or memory.  Points will be
-    deducted if you code can crash in any way.  So be sure to
-    consider and handle all possible threats that may crash your
-    application.
-        
-        i.e. Use:
-    if (ptr == NULL) {perror("Error : "); exit(-1); }
-    ... and possibly empty_vector() for good measure
-
-    This code will be used in your final project to create static
-    and dynamic libraries.
-*/
-
-
-/*
-    Struct for a vector of double.  It contains a pointer
-    to a vector of double, an integer for allocated length
-    of the vector and and integer for the count of double
-    inserted.
-*/
 typedef struct {
     double *vector;
     int count;
@@ -86,7 +50,7 @@ int equals(Vector v1, Vector v2);
 int main()
 {
     // Test create, insert and print
-    printf("\nTest create, insert and print\n####################\n");
+    printf("Test create, insert and print\n");
     Vector v1 = create_vector(2);
     insert(&v1, 1.0);
     insert(&v1, 2.0);
@@ -97,19 +61,19 @@ int main()
     printf("\n");
 
     // Test copy and copy range
-    printf("Test copy and copy range\n####################\n");
+    printf("Test copy and copy range\n");
     Vector v2 = copy(v1);
-    // print_vec(v2);
+    print_vec(v2);
     Vector v3 = copy_range(v1, 1, 3);
-    // print_vec(v3);
+    print_vec(v3);
     printf("\n");
 
     // Test zeros and fill
-    printf("Test zeros and fill\n####################\n");
+    printf("Test zeros and fill\n");
     zeros(&v3);
-    // print_vec(v3);
+    print_vec(v3);
     fill(&v2, 1.0);
-    // print_vec(v2);
+    print_vec(v2);
     printf("\n");
 
     // Test read and write
@@ -130,11 +94,11 @@ int main()
     printf("Test swap, sort, reverse and search\n");
     swap(&v1, 0, 4);
     swap(&v1, 1, 3);
-    print_min(v1);
+    print_vec(v1);
     sort(&v1);
-    print_min(v1);
+    print_vec(v1);
     reverse(&v4);
-    print_min(v4);
+    print_vec(v4);
     int i = search(v4, 6.0);
     printf("Found at %d\n\n", i);
 
@@ -148,25 +112,18 @@ int main()
     // Test add, sub, mul, divv, dot and equals
     printf("Test add, sub, mul, divv, dot and equals\n");
     Vector v6 = add(v1, v4);
-    printf("   "); print_min(v1); printf(" + "); print_min(v4);
-    print_min(v6);
+    print_vec(v6);
     Vector v7 = sub(v6, v4);
-    printf("   "); print_min(v6); printf(" - "); print_min(v4);
-    print_min(v7);
+    print_vec(v7);
     Vector v8 = mul(v1, v4);
-    printf("   "); print_min(v1); printf(" * "); print_min(v4);
-    print_min(v8);
+    print_vec(v8);
     Vector v9 = divv(v8, v4);
-    printf("   "); print_min(v8); printf(" / "); print_min(v4);
-    print_min(v9);
+    print_vec(v9);
     double dbl = dot(v1, v4);
-    printf("   "); print_min(v1); printf(" . "); print_min(v4);
     printf("Dot = %f\n", dbl);
     i = equals(v1, v4);
-    printf("    "); print_min(v1); printf(" == "); print_min(v4);
     printf("Equals = %d\n", i);
     i = equals(v1, v1);
-    printf("    "); print_min(v1); printf(" == "); print_min(v1);
     printf("Equals = %d\n", i);
 
     // Free memory
@@ -477,7 +434,7 @@ Vector get_from_con()
 void add_from_con(Vector *v)
 {
     printf("Enter your doubles, i.e. <numeric>.<numeric><Enter>\n");
-    printf("Hit enter a second time to exit, i.e. <Enter><Enter>");
+    printf("Hit enter a second time to exit, i.e. <Enter><Enter>\n");
     double dbl = 1.0;
     char in[255];    
     
