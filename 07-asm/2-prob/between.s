@@ -10,13 +10,13 @@ between:
 	movl	%esi, -8(%rbp)
 	movl	%edx, -12(%rbp)
 	movl	-4(%rbp), %eax
-	cmpl	-8(%rbp), %eax
-	jle	.L2
+	cmpl	-8(%rbp), %eax 		# Compare Longs ___ and ___ 
+	jle	.L2 					# Jump if <= to .L2
 	movl	-4(%rbp), %eax
 	cmpl	-12(%rbp), %eax
-	jge	.L2
+	jge	.L2 					# Jump if >= to .L2
 	movl	$1, %eax
-	jmp	.L3
+	jmp	.L3 					# Unconditional jump to .L3
 .L2:
 	movl	$0, %eax
 .L3:

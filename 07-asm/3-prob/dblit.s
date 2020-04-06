@@ -27,7 +27,7 @@ dblit:
 .L2:
 	movl	-4(%rbp), %eax
 	cmpl	-28(%rbp), %eax
-	jl	.L3
+	jl	.L3 					# Jump if < to .L3
 	nop
 	popq	%rbp
 	ret
