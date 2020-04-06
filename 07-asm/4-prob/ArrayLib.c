@@ -151,10 +151,10 @@ int main()
     printf("Var = %f\n", var(v4));
     printf("Stdv = %f\n\n", stdv(v4));
 
-    // // Test add, sub, mul, divv, dot and equals
-    // printf("Test add, sub, mul, divv, dot and equals\n");
-    // Vector v6 = add(v1, v4);
-    // print_vec(v6);
+    // Test add, sub, mul, divv, dot and equals
+    printf("Test add, sub, mul, divv, dot and equals\n");
+    Vector v6 = add(v1, v4);
+    print_vec(v6);
     // Vector v7 = sub(v6, v4);
     // print_vec(v7);
     // Vector v8 = mul(v1, v4);
@@ -174,7 +174,7 @@ int main()
     delete_vector(&v3);
     delete_vector(&v4);
     // delete_vector(&v5);
-    // delete_vector(&v6);
+    delete_vector(&v6);
     // delete_vector(&v7);
     // delete_vector(&v8);
     // delete_vector(&v9);
@@ -528,7 +528,7 @@ double sum(Vector v)
 double avg(Vector v)
 {
     double sigma = sum(v);
-    return sigma / v.count;    
+    return sigma / v.count;
 }
 
 
@@ -536,13 +536,15 @@ double avg(Vector v)
 double var(Vector v)
 {
     Vector temp = create_vector(v.length);
-    double sum;
     double mean = avg(v);
     int i = 0;
     while (i < v.count) {
-        // insert(  );
+        insert(&temp, pow(v.vector[i] - mean, 2));
+        i++;
     }
-
+    double variance = avg(temp);
+    delete_vector(&temp);
+    return variance;
 }
 
 
@@ -553,11 +555,8 @@ double stdv(Vector v)
 }
 
 
-
 /*
-
     Multiple vector functions
-
 */
 
 /*
@@ -565,8 +564,17 @@ double stdv(Vector v)
     where v3[i] = v1[i] + v2[i] and return the resulting
     vector.
 */
-//Vector add(Vector v1, Vector v2){
-//}
+Vector add(Vector v1, Vector v2)
+{
+    if (v1.count != v2.count)
+        return empty_vector();
+    Vector v3 = create_vector(v1.count);
+    int i;
+    for (i = 0; i < v1.count; i++) {
+        insert(&v3, v1.vector[i] + v2.vector[i]);
+    }
+    return v3;
+}
 
 
 /*
@@ -574,8 +582,10 @@ double stdv(Vector v)
     another, where v3[i] = v1[i] - v2[i] and return the resulting
     vector.
 */
-//Vector sub(Vector v1, Vector v2){
-//}
+Vector sub(Vector v1, Vector v2)
+{
+
+}
 
 
 /*
