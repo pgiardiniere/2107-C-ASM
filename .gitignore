@@ -2,31 +2,31 @@ foo
 
 00-Miscellaneous/!*.*
 
-04-BMP-encrypt/cipher.txt
-04-BMP-encrypt/decoded-cipher.txt
-04-BMP-encrypt/decrypted.txt
-04-BMP-encrypt/encoded.bmp
-04-BMP-encrypt/key.txt
-04-BMP-encrypt/lab4
-04-BMP-encrypt/submodules/bits-Chars
-04-BMP-encrypt/submodules/bits-UInts
-04-BMP-encrypt/submodules/bmps
-04-BMP-encrypt/submodules/leastBit
-04-BMP-encrypt/submodules/stringSegfaults
+lab4-bmp-encrypt/cipher.txt
+lab4-bmp-encrypt/decoded-cipher.txt
+lab4-bmp-encrypt/decrypted.txt
+lab4-bmp-encrypt/encoded.bmp
+lab4-bmp-encrypt/key.txt
+lab4-bmp-encrypt/lab4
+lab4-bmp-encrypt/submodules/bits-Chars
+lab4-bmp-encrypt/submodules/bits-UInts
+lab4-bmp-encrypt/submodules/bmps
+lab4-bmp-encrypt/submodules/leastBit
+lab4-bmp-encrypt/submodules/stringSegfaults
 
-05-convertCalc/convertProb
-05-convertCalc/safeCalcProb
+lab5-convertCalc/convertProb
+lab5-convertCalc/safeCalcProb
 
-05-convertCalc/test-modules/*
-05-convertCalc/test-modules/!*/
-05-convertCalc/test-modules/!*.*
-05-convertCalc/test-modules/!sanitycheck.c
+lab5-convertCalc/test-modules/*
+lab5-convertCalc/test-modules/!*/
+lab5-convertCalc/test-modules/!*.*
+lab5-convertCalc/test-modules/!sanitycheck.c
 
-06-floats/floatsStuff
-06-floats/sandbox
+lab6-floats/floatsStuff
+lab6-floats/sandbox
 
-07-asm/1-prob/main
-07-asm/2-prob/main
-07-asm/3-prob/main
-07-asm/4-prob/ArrayLib
-07-asm/4-prob/check
+lab7-asm-vectors/1-prob/main
+lab7-asm-vectors/2-prob/main
+lab7-asm-vectors/3-prob/main
+lab7-asm-vectors/4-prob/ArrayLib
+lab7-asm-vectors/4-prob/check
