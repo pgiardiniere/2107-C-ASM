@@ -30,3 +30,8 @@ DoneEitherWay:
 absdiff in C: 
 	(see main.c)
 
+	OMG. 
+
+	gcc -S -O main.c
+
+	Optimizes the assembly output for you. Wtf.
