@@ -1,0 +1,32 @@
+Today: 
+	Control Flow:
+		Branching 	(unconditional jumps)
+		Conditionals
+
+
+%eip
+	is the instruction register
+	It may move forward or backward, by 1 or any number of instructions.
+
+		(opcodes and operands may have different size)
+
+
+if statement in assembly
+
+	movl a, %eax
+	movl b, %ebx
+	cmpl %eax, %ebx
+	je truestuff 		# Jump if (ebx) == (eax)
+
+	jmp DoneEitherWay
+
+truestuff:
+	# true instructions
+
+DoneEitherWay:
+	# Unconditional jump goes here
+
+
+absdiff in C: 
+	(see main.c)
+
