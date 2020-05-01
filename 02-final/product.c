@@ -19,6 +19,9 @@ typedef struct {
 } ProductArray;
 
 
+void print(Product prod);
+void print_all(ProductArray* pl);
+
 ProductArray make_product_array(int length) {
     Product* arr = (Product*) malloc(sizeof(Product) * length);
     if (arr == NULL) {
@@ -34,7 +37,7 @@ void delete_product_array(ProductArray* pl) {
     if ((*pl).arr == NULL) {
         return;
     }
-    free((*pl).arr);
+    free( pl->arr );
     (*pl).length = 0;
     (*pl).count = 0;
 }
@@ -57,11 +60,9 @@ void insert_product(ProductArray* pl, Product prod) {
 }
 
 
-ProductArray* read(char* filename) {
+void read(char* filename, ProductArray* pl) {
     // Declarations
-    ProductArray pl = make_product_array(GROW_SIZE);
-    char id[6];
-    char desc[50];
+    // ProductArray pl = make_product_array(GROW_SIZE);
     double price;
     int qty;
 
@@ -83,6 +84,11 @@ ProductArray* read(char* filename) {
     // Read file 1 line at a time.
     int i = 0;
     for (i = 0; i < j; i++) {
+        // make new string buffers for each line
+        char* id = (char*) malloc(6 * sizeof(char));
+        char* desc = (char*) malloc(50 * sizeof(char));
+        if (id == NULL || desc == NULL) { perror("error: "); exit(-1); }
+
         fgets(line, 255, file);
         strtok(line, "\n");
 
@@ -102,13 +108,11 @@ ProductArray* read(char* filename) {
 
         // Make product and insert.
         Product p = { id, desc, price, qty };
-        insert_product(&pl, p);
+        insert_product(pl, p);
+        
     }
-
     free(line);
     fclose(file);
-
-    return &pl;
 }
 
 
@@ -116,7 +120,7 @@ void print(Product prod) {
     printf("\nID is: %s", prod.id);
     printf("\nDescription is: %s", prod.description);
     printf("\nPrice is: %lf", prod.price);
-    printf("\nQuantity is: %d", prod.quantity);
+    printf("\nQuantity is: %d\n", prod.quantity);
 }
 
 
@@ -132,7 +136,7 @@ void print_low(ProductArray* pl) {
     int i = 0;
     while (i < (*pl).count) {
         
-        if ((*pl).arr[0].quantity < 10)
+        if ((*pl).arr[i].quantity < 10)
             print((*pl).arr[i]);
         i++;
     }
@@ -148,11 +152,12 @@ double calc_total() {
 
 
 int main() {
-    ProductArray* pl = read("Products.csv");
+    ProductArray pl = make_product_array(GROW_SIZE);
+    read("Products.csv", &pl);
     
-    // print_all(&pl);
-    // print_low(&pl);
+    //print_all(&pl);
+    print_low(&pl);
 
-    delete_product_array(pl);
+    delete_product_array(&pl);
     return 0;
 }
