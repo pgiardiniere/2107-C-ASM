@@ -51,3 +51,8 @@ void insert_product(ProductArray* products, Product prod) {
     
 
 }
+
+int main() {
+    printf("hi\n");
+    return 0;
+}
