@@ -11,11 +11,13 @@ typedef struct {
     int quantity;
 } Product;
 
+
 typedef struct {
     Product* arr;
     int length;
     int count;
 } ProductArray;
+
 
 ProductArray make_product_array(int length) {
     Product* arr = (Product*) malloc(sizeof(Product) * length);
@@ -27,6 +29,7 @@ ProductArray make_product_array(int length) {
     return pl;
 }
 
+
 void delete_product_array(ProductArray* pl) {
     if ((*pl).arr == NULL) {
         return;
@@ -35,6 +38,7 @@ void delete_product_array(ProductArray* pl) {
     (*pl).length = 0;
     (*pl).count = 0;
 }
+
 
 void insert_product(ProductArray* pl, Product prod) {
     // If full, double length and reallocate array according to length * sizeof struct.
@@ -51,6 +55,7 @@ void insert_product(ProductArray* pl, Product prod) {
     (*pl).arr[(*pl).count] = prod;
     (*pl).count += 1;
 }
+
 
 ProductArray* read(char* filename) {
     // Declarations
@@ -75,12 +80,13 @@ ProductArray* read(char* filename) {
     }
     rewind(file);
     
-    // Read file, making products 1 line at a time.
+    // Read file 1 line at a time.
     int i = 0;
     for (i = 0; i < j; i++) {
         fgets(line, 255, file);
         strtok(line, "\n");
 
+        // Get product datafields from line.
         char* ptr = strtok(line, ",");
         strncpy(id, ptr, 5);
         id[5] = '\0';
@@ -94,17 +100,59 @@ ProductArray* read(char* filename) {
         ptr = strtok(NULL, ",");
         qty = atoi(ptr);
 
+        // Make product and insert.
         Product p = { id, desc, price, qty };
+        insert_product(&pl, p);
     }
-
-    // Insert product into our product array.
 
     free(line);
     fclose(file);
+
+    return &pl;
 }
 
-int main() {
-    read("Products.csv");
 
+void print(Product prod) {
+    printf("\nID is: %s", prod.id);
+    printf("\nDescription is: %s", prod.description);
+    printf("\nPrice is: %lf", prod.price);
+    printf("\nQuantity is: %d", prod.quantity);
+}
+
+
+void print_all(ProductArray* pl) {
+    int i = 0;
+    while (i < (*pl).count) {
+        print((*pl).arr[i]);
+        i++;
+    }
+}
+
+void print_low(ProductArray* pl) {
+    int i = 0;
+    while (i < (*pl).count) {
+        
+        if ((*pl).arr[0].quantity < 10)
+            print((*pl).arr[i]);
+        i++;
+    }
+
+}
+
+
+double calc_total() {
+
+}
+
+
+
+
+int main() {
+    ProductArray* pl = read("Products.csv");
+    
+    // print_all(&pl);
+    // print_low(&pl);
+
+    delete_product_array(pl);
     return 0;
 }
